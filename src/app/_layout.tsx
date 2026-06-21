@@ -1,13 +1,34 @@
-import { Slot } from "expo-router";
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
+import {
+  Manrope_400Regular,
+  Manrope_500Medium,
+  Manrope_600SemiBold,
+  Manrope_700Bold,
+  useFonts,
+} from "@expo-google-fonts/manrope";
+import { colors } from "@/theme";
 
-export default function TabLayout() {
+export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    Manrope_400Regular,
+    Manrope_500Medium,
+    Manrope_600SemiBold,
+    Manrope_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <SafeAreaView>
-      <Text>General layout</Text>
-
-      <Slot />
-    </SafeAreaView>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+        contentStyle: {
+          backgroundColor: colors.white,
+        },
+      }}
+    />
   );
 }

@@ -1,9 +1,10 @@
-import { Text, View } from "react-native";
+import { ScreenLayout } from "@/components";
+import { WelcomeScreen } from "@/features";
 
-export default function HomeScreen() {
+export default function IndexRoute() {
   return (
-    <View>
-      <Text>Test123</Text>
-    </View>
+    <ScreenLayout>
+      <WelcomeScreen />
+    </ScreenLayout>
   );
 }
