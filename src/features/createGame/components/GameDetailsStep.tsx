@@ -3,10 +3,15 @@ import { spacing } from "@/theme";
 import { router } from "expo-router";
 import { Controller, useFormContext } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
-import { CreateGameFormValues } from "../schemas";
+
+import { useCreateGameDraft } from "../context";
+import { CreateGameFormValues } from "../schemas/createGameSchema";
 
 export function GameDetailsStep() {
-	const { control, handleSubmit } = useFormContext<CreateGameFormValues>();
+	const { control, handleSubmit, watch } = useFormContext<CreateGameFormValues>();
+	const { setDraft } = useCreateGameDraft();
+
+	const startTime = watch("startTime");
 
 	const sportOptions = [
 		{
@@ -28,6 +33,8 @@ export function GameDetailsStep() {
 	];
 
 	function handleContinue(values: CreateGameFormValues) {
+		setDraft(values);
+
 		router.push("/review-game");
 	}
 
@@ -80,20 +87,42 @@ export function GameDetailsStep() {
 				)}
 			/>
 
-			<Controller
-				control={control}
-				name="time"
-				render={({ field, fieldState }) => (
-					<TimePicker
-						drawerTitle="Choose a time"
-						error={fieldState.error?.message}
-						label="Time"
-						onValueChange={field.onChange}
-						required
-						value={field.value}
+			<View style={styles.timeFields}>
+				<View style={styles.timeField}>
+					<Controller
+						control={control}
+						name="startTime"
+						render={({ field, fieldState }) => (
+							<TimePicker
+								drawerTitle="Choose start time"
+								error={fieldState.error?.message}
+								label="Start time"
+								onValueChange={field.onChange}
+								required
+								value={field.value}
+							/>
+						)}
 					/>
-				)}
-			/>
+				</View>
+
+				<View style={styles.timeField}>
+					<Controller
+						control={control}
+						name="endTime"
+						render={({ field, fieldState }) => (
+							<TimePicker
+								drawerTitle="Choose end time"
+								error={fieldState.error?.message}
+								label="End time"
+								minTime={startTime}
+								onValueChange={field.onChange}
+								required
+								value={field.value}
+							/>
+						)}
+					/>
+				</View>
+			</View>
 
 			<Controller
 				control={control}
@@ -162,5 +191,12 @@ export function GameDetailsStep() {
 const styles = StyleSheet.create({
 	form: {
 		gap: spacing[4],
+	},
+	timeFields: {
+		flexDirection: "row",
+		gap: spacing[3],
+	},
+	timeField: {
+		flex: 1,
 	},
 });

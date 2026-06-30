@@ -4,6 +4,7 @@ export interface TimePickerProps {
 	placeholder?: string;
 	drawerTitle?: string;
 	error?: string;
+	minTime?: string;
 	required?: boolean;
 	onValueChange: (value: string) => void;
 }

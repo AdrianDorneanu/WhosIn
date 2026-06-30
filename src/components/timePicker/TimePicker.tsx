@@ -2,6 +2,7 @@ import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, spacing, typography } from "@/theme";
 import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { DateTime } from "luxon";
 import { useState } from "react";
 import {
 	Animated,
@@ -39,12 +40,24 @@ function formatTime(value?: string) {
 	return selectedOption?.label;
 }
 
+function isAfterMinTime(value: string, minTime?: string) {
+	if (!minTime) {
+		return true;
+	}
+
+	const time = DateTime.fromFormat(value, "HH:mm");
+	const min = DateTime.fromFormat(minTime, "HH:mm");
+
+	return time.isValid && min.isValid && time > min;
+}
+
 export function TimePicker({
 	label,
 	value,
 	placeholder = "Select time",
 	drawerTitle = "Choose a time",
 	error,
+	minTime,
 	required,
 	onValueChange,
 }: TimePickerProps) {
@@ -52,11 +65,12 @@ export function TimePicker({
 	const [draftValue, setDraftValue] = useState(value);
 	const [drawerProgress] = useState(() => new Animated.Value(0));
 	const formattedValue = formatTime(value);
+	const filteredTimeOptions = timeOptions.filter((option) => isAfterMinTime(option.value, minTime));
 	const animatedTriggerStyle = useFocusBorderStyle(isOpen, Boolean(error));
 
 	function openDrawer() {
 		Keyboard.dismiss();
-		setDraftValue(value);
+		setDraftValue(value && isAfterMinTime(value, minTime) ? value : undefined);
 		setIsOpen(true);
 
 		Animated.timing(drawerProgress, {
@@ -144,9 +158,9 @@ export function TimePicker({
 								<Text style={styles.drawerTitle}>{drawerTitle}</Text>
 
 								<ScrollView style={styles.optionsContainer}>
-									{timeOptions.map((option, index) => {
+									{filteredTimeOptions.map((option, index) => {
 										const isSelected = option.value === draftValue;
-										const isLastOption = index === timeOptions.length - 1;
+										const isLastOption = index === filteredTimeOptions.length - 1;
 
 										return (
 											<Pressable

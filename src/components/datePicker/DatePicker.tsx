@@ -2,6 +2,7 @@ import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, fontFamily, spacing, typography } from "@/theme";
 import { faChevronDown, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { DateTime } from "luxon";
 import { useState } from "react";
 import { Animated, Keyboard, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -23,13 +24,9 @@ function formatDate(value?: string) {
 		return undefined;
 	}
 
-	const date = new Date(`${value}T00:00:00`);
+	const date = DateTime.fromISO(value);
 
-	return new Intl.DateTimeFormat("en", {
-		day: "numeric",
-		month: "short",
-		weekday: "short",
-	}).format(date);
+	return date.isValid ? date.toFormat("ccc, LLL d") : undefined;
 }
 
 function formatCalendarMonth(date?: CalendarMonth) {
@@ -37,10 +34,7 @@ function formatCalendarMonth(date?: CalendarMonth) {
 		return "";
 	}
 
-	return new Intl.DateTimeFormat("en", {
-		month: "long",
-		year: "numeric",
-	}).format(new Date(date.getFullYear(), date.getMonth(), 1));
+	return DateTime.local(date.getFullYear(), date.getMonth() + 1, 1).toFormat("LLLL yyyy");
 }
 
 function CalendarHeader({ month, addMonth }: CalendarHeaderProps) {

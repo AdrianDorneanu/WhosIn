@@ -22,6 +22,7 @@
 		"expo-symbols": "~56.0.6",
 		"expo-system-ui": "~56.0.5",
 		"expo-web-browser": "~56.0.5",
+		"luxon": "^3.7.2",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"react-hook-form": "^7.80.0",
@@ -37,6 +38,7 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
+		"@types/luxon": "^3.7.2",
 		"@types/react": "~19.2.2",
 		"eslint": "^9.39.4",
 		"eslint-config-expo": "^56.0.4",
