@@ -1,15 +1,8 @@
-export interface SelectOption {
+export interface TimePickerProps {
 	label: string;
-	value: string;
-}
-
-export interface SelectProps {
-	label: string;
-	options: SelectOption[];
 	value?: string;
 	placeholder?: string;
 	drawerTitle?: string;
-	searchPlaceholder?: string;
 	error?: string;
 	required?: boolean;
 	onValueChange: (value: string) => void;

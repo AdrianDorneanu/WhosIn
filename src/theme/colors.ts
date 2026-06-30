@@ -29,6 +29,11 @@ export const colors = {
 		default: "#E5E7EB",
 		strong: "#D9DEE8",
 	},
+	danger: {
+		main: "#DC2626",
+		light: "#FEF2F2",
+		outline: "#FCA5A5",
+	},
 	green: {
 		50: "#ECFDF3",
 		100: "#D1FADF",

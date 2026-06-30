@@ -17,5 +17,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		gap: spacing[6],
+		minHeight: 0,
 	},
 });

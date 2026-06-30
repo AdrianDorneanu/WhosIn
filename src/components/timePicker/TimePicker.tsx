@@ -1,35 +1,49 @@
 import { colors, spacing, typography } from "@/theme";
-import { faCheck, faChevronDown, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
-import { Animated, Modal, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Animated, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 
-import { SelectProps } from "./types";
+import { TimePickerProps } from "./types";
 
-export function Select({
+const timeOptions = Array.from({ length: 48 }, (_, index) => {
+	const hour24 = Math.floor(index / 2);
+	const minutes = index % 2 === 0 ? "00" : "30";
+	const period = hour24 >= 12 ? "PM" : "AM";
+	const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+
+	return {
+		label: `${hour12}:${minutes} ${period}`,
+		value: `${hour24.toString().padStart(2, "0")}:${minutes}`,
+	};
+});
+
+function formatTime(value?: string) {
+	if (!value) {
+		return undefined;
+	}
+
+	const selectedOption = timeOptions.find((option) => option.value === value);
+
+	return selectedOption?.label;
+}
+
+export function TimePicker({
 	label,
-	options,
 	value,
-	placeholder = "Select an option",
-	drawerTitle = `Choose a ${label.toLowerCase()}`,
-	searchPlaceholder = "Search",
+	placeholder = "Select time",
+	drawerTitle = "Choose a time",
 	error,
 	required,
 	onValueChange,
-}: SelectProps) {
+}: TimePickerProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [search, setSearch] = useState("");
 	const [draftValue, setDraftValue] = useState(value);
 	const [drawerProgress] = useState(() => new Animated.Value(0));
-
-	const selectedOption = options.find((option) => option.value === value);
-	const filteredOptions = options.filter((option) =>
-		option.label.toLowerCase().includes(search.trim().toLowerCase()),
-	);
+	const formattedValue = formatTime(value);
 
 	function openDrawer() {
 		setDraftValue(value);
-		setSearch("");
 		setIsOpen(true);
 
 		Animated.timing(drawerProgress, {
@@ -72,8 +86,8 @@ export function Select({
 				style={({ pressed }) => [styles.trigger, error && styles.triggerError, pressed && styles.triggerPressed]}
 			>
 				<View style={styles.valueContainer}>
-					<Text numberOfLines={1} style={[styles.value, !selectedOption && styles.placeholder]}>
-						{selectedOption?.label ?? placeholder}
+					<Text numberOfLines={1} style={[styles.value, !formattedValue && styles.placeholder]}>
+						{formattedValue ?? placeholder}
 					</Text>
 				</View>
 
@@ -85,14 +99,7 @@ export function Select({
 			<Modal animationType="none" onRequestClose={closeDrawer} transparent visible={isOpen}>
 				<View style={styles.modalRoot}>
 					<TouchableWithoutFeedback onPress={closeDrawer}>
-						<Animated.View
-							style={[
-								styles.backdrop,
-								{
-									opacity: drawerProgress,
-								},
-							]}
-						/>
+						<Animated.View style={[styles.backdrop, { opacity: drawerProgress }]} />
 					</TouchableWithoutFeedback>
 
 					<View pointerEvents="box-none" style={styles.drawerContainer}>
@@ -105,7 +112,7 @@ export function Select({
 											{
 												translateY: drawerProgress.interpolate({
 													inputRange: [0, 1],
-													outputRange: [360, 0],
+													outputRange: [420, 0],
 												}),
 											},
 										],
@@ -116,22 +123,10 @@ export function Select({
 
 								<Text style={styles.drawerTitle}>{drawerTitle}</Text>
 
-								<View style={styles.searchContainer}>
-									<FontAwesomeIcon color={colors.text.muted} icon={faMagnifyingGlass} size={14} />
-									<TextInput
-										autoCorrect={false}
-										onChangeText={setSearch}
-										placeholder={searchPlaceholder}
-										placeholderTextColor={colors.text.muted}
-										style={styles.searchInput}
-										value={search}
-									/>
-								</View>
-
-								<View style={styles.optionsContainer}>
-									{filteredOptions.map((option, index) => {
+								<ScrollView style={styles.optionsContainer}>
+									{timeOptions.map((option, index) => {
 										const isSelected = option.value === draftValue;
-										const isLastOption = index === filteredOptions.length - 1;
+										const isLastOption = index === timeOptions.length - 1;
 
 										return (
 											<Pressable
@@ -144,23 +139,21 @@ export function Select({
 													pressed && styles.optionPressed,
 												]}
 											>
-												<View style={styles.optionContent}>
-													<Text style={styles.optionLabel}>{option.label}</Text>
+												<Text style={styles.optionLabel}>{option.label}</Text>
 
-													<View style={[styles.radio, isSelected && styles.radioSelected]}>
-														{isSelected && (
-															<FontAwesomeIcon
-																color={colors.primary.contrast}
-																icon={faCheck}
-																size={10}
-															/>
-														)}
-													</View>
+												<View style={[styles.radio, isSelected && styles.radioSelected]}>
+													{isSelected && (
+														<FontAwesomeIcon
+															color={colors.primary.contrast}
+															icon={faCheck}
+															size={10}
+														/>
+													)}
 												</View>
 											</Pressable>
 										);
 									})}
-								</View>
+								</ScrollView>
 
 								<View style={styles.actions}>
 									<Pressable
@@ -258,6 +251,7 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.background.card,
 		borderTopLeftRadius: spacing[6],
 		borderTopRightRadius: spacing[6],
+		maxHeight: "75%",
 		paddingBottom: spacing[8],
 		paddingHorizontal: spacing[6],
 		paddingTop: spacing[3],
@@ -275,39 +269,16 @@ const styles = StyleSheet.create({
 		marginBottom: spacing[4],
 		...typography.heading3,
 	},
-	searchContainer: {
-		alignItems: "center",
-		borderColor: colors.border.default,
-		borderRadius: spacing[3],
-		borderWidth: 1,
-		flexDirection: "row",
-		gap: spacing[2],
-		height: spacing[12],
-		paddingHorizontal: spacing[3],
-	},
-	searchInput: {
-		color: colors.text.primary,
-		flex: 1,
-		padding: 0,
-		...typography.caption,
-	},
 	optionsContainer: {
-		marginTop: spacing[3],
-		overflow: "hidden",
+		marginBottom: spacing[4],
 	},
 	option: {
 		alignItems: "center",
 		borderRadius: spacing[3],
 		flexDirection: "row",
-		minHeight: spacing[12],
-		paddingHorizontal: spacing[3],
-	},
-	optionContent: {
-		alignItems: "center",
-		flex: 1,
-		flexDirection: "row",
 		justifyContent: "space-between",
 		minHeight: spacing[12],
+		paddingHorizontal: spacing[3],
 	},
 	optionSeparator: {
 		borderBottomColor: colors.border.default,
@@ -339,7 +310,6 @@ const styles = StyleSheet.create({
 	actions: {
 		flexDirection: "row",
 		gap: spacing[3],
-		marginTop: spacing[4],
 	},
 	actionButton: {
 		alignItems: "center",

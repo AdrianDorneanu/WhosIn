@@ -1,35 +1,91 @@
-import { colors, spacing, typography } from "@/theme";
-import { faCheck, faChevronDown, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { colors, fontFamily, spacing, typography } from "@/theme";
+import { faChevronDown, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
-import { Animated, Modal, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Animated, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Calendar, DateData } from "react-native-calendars";
 
-import { SelectProps } from "./types";
+import { DatePickerProps } from "./types";
 
-export function Select({
+interface CalendarMonth {
+	getFullYear: () => number;
+	getMonth: () => number;
+}
+
+interface CalendarHeaderProps {
+	month?: CalendarMonth;
+	addMonth?: (count: number) => void;
+}
+
+function formatDate(value?: string) {
+	if (!value) {
+		return undefined;
+	}
+
+	const date = new Date(`${value}T00:00:00`);
+
+	return new Intl.DateTimeFormat("en", {
+		day: "numeric",
+		month: "short",
+		weekday: "short",
+	}).format(date);
+}
+
+function formatCalendarMonth(date?: CalendarMonth) {
+	if (!date) {
+		return "";
+	}
+
+	return new Intl.DateTimeFormat("en", {
+		month: "long",
+		year: "numeric",
+	}).format(new Date(date.getFullYear(), date.getMonth(), 1));
+}
+
+function CalendarHeader({ month, addMonth }: CalendarHeaderProps) {
+	return (
+		<View style={styles.calendarHeader}>
+			<View style={styles.calendarNavigation}>
+				<Pressable onPress={() => addMonth?.(-1)} style={styles.calendarArrow}>
+					<FontAwesomeIcon color={colors.primary.main} icon={faChevronLeft} size={16} />
+				</Pressable>
+
+				<Text numberOfLines={1} style={styles.calendarTitle}>
+					{formatCalendarMonth(month)}
+				</Text>
+
+				<Pressable onPress={() => addMonth?.(1)} style={styles.calendarArrow}>
+					<FontAwesomeIcon color={colors.primary.main} icon={faChevronRight} size={16} />
+				</Pressable>
+			</View>
+
+			<View style={styles.weekDays}>
+				{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+					<Text key={day} style={styles.weekDay}>
+						{day}
+					</Text>
+				))}
+			</View>
+		</View>
+	);
+}
+
+export function DatePicker({
 	label,
-	options,
 	value,
-	placeholder = "Select an option",
-	drawerTitle = `Choose a ${label.toLowerCase()}`,
-	searchPlaceholder = "Search",
+	placeholder = "Select date",
+	drawerTitle = "Choose a date",
 	error,
 	required,
 	onValueChange,
-}: SelectProps) {
+}: DatePickerProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [search, setSearch] = useState("");
 	const [draftValue, setDraftValue] = useState(value);
 	const [drawerProgress] = useState(() => new Animated.Value(0));
-
-	const selectedOption = options.find((option) => option.value === value);
-	const filteredOptions = options.filter((option) =>
-		option.label.toLowerCase().includes(search.trim().toLowerCase()),
-	);
+	const formattedValue = formatDate(value);
 
 	function openDrawer() {
 		setDraftValue(value);
-		setSearch("");
 		setIsOpen(true);
 
 		Animated.timing(drawerProgress, {
@@ -49,6 +105,10 @@ export function Select({
 				setIsOpen(false);
 			}
 		});
+	}
+
+	function handleDayPress(day: DateData) {
+		setDraftValue(day.dateString);
 	}
 
 	function handleDone() {
@@ -72,8 +132,8 @@ export function Select({
 				style={({ pressed }) => [styles.trigger, error && styles.triggerError, pressed && styles.triggerPressed]}
 			>
 				<View style={styles.valueContainer}>
-					<Text numberOfLines={1} style={[styles.value, !selectedOption && styles.placeholder]}>
-						{selectedOption?.label ?? placeholder}
+					<Text numberOfLines={1} style={[styles.value, !formattedValue && styles.placeholder]}>
+						{formattedValue ?? placeholder}
 					</Text>
 				</View>
 
@@ -85,14 +145,7 @@ export function Select({
 			<Modal animationType="none" onRequestClose={closeDrawer} transparent visible={isOpen}>
 				<View style={styles.modalRoot}>
 					<TouchableWithoutFeedback onPress={closeDrawer}>
-						<Animated.View
-							style={[
-								styles.backdrop,
-								{
-									opacity: drawerProgress,
-								},
-							]}
-						/>
+						<Animated.View style={[styles.backdrop, { opacity: drawerProgress }]} />
 					</TouchableWithoutFeedback>
 
 					<View pointerEvents="box-none" style={styles.drawerContainer}>
@@ -105,7 +158,7 @@ export function Select({
 											{
 												translateY: drawerProgress.interpolate({
 													inputRange: [0, 1],
-													outputRange: [360, 0],
+													outputRange: [420, 0],
 												}),
 											},
 										],
@@ -116,51 +169,40 @@ export function Select({
 
 								<Text style={styles.drawerTitle}>{drawerTitle}</Text>
 
-								<View style={styles.searchContainer}>
-									<FontAwesomeIcon color={colors.text.muted} icon={faMagnifyingGlass} size={14} />
-									<TextInput
-										autoCorrect={false}
-										onChangeText={setSearch}
-										placeholder={searchPlaceholder}
-										placeholderTextColor={colors.text.muted}
-										style={styles.searchInput}
-										value={search}
-									/>
-								</View>
-
-								<View style={styles.optionsContainer}>
-									{filteredOptions.map((option, index) => {
-										const isSelected = option.value === draftValue;
-										const isLastOption = index === filteredOptions.length - 1;
-
-										return (
-											<Pressable
-												key={option.value}
-												onPress={() => setDraftValue(option.value)}
-												style={({ pressed }) => [
-													styles.option,
-													!isLastOption && styles.optionSeparator,
-													isSelected && styles.optionSelected,
-													pressed && styles.optionPressed,
-												]}
-											>
-												<View style={styles.optionContent}>
-													<Text style={styles.optionLabel}>{option.label}</Text>
-
-													<View style={[styles.radio, isSelected && styles.radioSelected]}>
-														{isSelected && (
-															<FontAwesomeIcon
-																color={colors.primary.contrast}
-																icon={faCheck}
-																size={10}
-															/>
-														)}
-													</View>
-												</View>
-											</Pressable>
-										);
-									})}
-								</View>
+								<Calendar
+									current={draftValue}
+									markedDates={
+										draftValue
+											? {
+													[draftValue]: {
+														selected: true,
+														selectedColor: colors.primary.main,
+														selectedTextColor: colors.primary.contrast,
+													},
+												}
+											: undefined
+									}
+									onDayPress={handleDayPress}
+									customHeader={CalendarHeader}
+									style={styles.calendar}
+									theme={{
+										arrowColor: colors.primary.main,
+										calendarBackground: colors.background.card,
+										dayTextColor: colors.text.primary,
+										monthTextColor: colors.text.primary,
+										selectedDayBackgroundColor: colors.primary.main,
+										selectedDayTextColor: colors.primary.contrast,
+										textDayFontFamily: fontFamily.medium,
+										textDayFontSize: 15,
+										textDayHeaderFontFamily: fontFamily.semibold,
+										textDayHeaderFontSize: 12,
+										textDisabledColor: colors.border.strong,
+										textMonthFontFamily: fontFamily.bold,
+										textMonthFontSize: 18,
+										textSectionTitleColor: colors.text.muted,
+										todayTextColor: colors.primary.main,
+									}}
+								/>
 
 								<View style={styles.actions}>
 									<Pressable
@@ -275,66 +317,40 @@ const styles = StyleSheet.create({
 		marginBottom: spacing[4],
 		...typography.heading3,
 	},
-	searchContainer: {
+	calendar: {
+		marginHorizontal: -spacing[2],
+	},
+	calendarHeader: {
+		marginBottom: spacing[2],
+	},
+	calendarNavigation: {
 		alignItems: "center",
-		borderColor: colors.border.default,
-		borderRadius: spacing[3],
-		borderWidth: 1,
 		flexDirection: "row",
-		gap: spacing[2],
-		height: spacing[12],
-		paddingHorizontal: spacing[3],
-	},
-	searchInput: {
-		color: colors.text.primary,
-		flex: 1,
-		padding: 0,
-		...typography.caption,
-	},
-	optionsContainer: {
-		marginTop: spacing[3],
-		overflow: "hidden",
-	},
-	option: {
-		alignItems: "center",
-		borderRadius: spacing[3],
-		flexDirection: "row",
-		minHeight: spacing[12],
-		paddingHorizontal: spacing[3],
-	},
-	optionContent: {
-		alignItems: "center",
-		flex: 1,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		minHeight: spacing[12],
-	},
-	optionSeparator: {
-		borderBottomColor: colors.border.default,
-		borderBottomWidth: 1,
-	},
-	optionSelected: {
-		backgroundColor: colors.primary.light,
-	},
-	optionPressed: {
-		backgroundColor: colors.secondary.pressed,
-	},
-	optionLabel: {
-		color: colors.text.primary,
-		...typography.bodyMedium,
-	},
-	radio: {
-		alignItems: "center",
-		borderColor: colors.border.strong,
-		borderRadius: spacing[5],
-		borderWidth: 1,
-		height: spacing[5],
 		justifyContent: "center",
-		width: spacing[5],
+		marginBottom: spacing[3],
+		minHeight: spacing[10],
 	},
-	radioSelected: {
-		backgroundColor: colors.primary.main,
-		borderColor: colors.primary.main,
+	calendarArrow: {
+		alignItems: "center",
+		height: spacing[10],
+		justifyContent: "center",
+		width: spacing[10],
+	},
+	calendarTitle: {
+		color: colors.text.primary,
+		flex: 1,
+		textAlign: "center",
+		...typography.heading3,
+	},
+	weekDays: {
+		flexDirection: "row",
+	},
+	weekDay: {
+		color: colors.text.muted,
+		flex: 1,
+		textAlign: "center",
+		...typography.caption,
+		fontFamily: fontFamily.semibold,
 	},
 	actions: {
 		flexDirection: "row",
