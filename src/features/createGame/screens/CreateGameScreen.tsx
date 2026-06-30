@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { ScrollView, StyleSheet } from "react-native";
 
-import { GameDetailsStep } from "./components";
-import { createGameSchema, CreateGameFormValues } from "./schemas";
+import { GameDetailsStep } from "../components";
+import { CreateGameFormValues, createGameSchema } from "../schemas";
 
 export function CreateGameScreen() {
 	const form = useForm<CreateGameFormValues>({

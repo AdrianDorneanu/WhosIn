@@ -1,3 +1,2 @@
-export { CreateGameScreen } from "./createGameScreen";
-export { ReviewGameScreen } from "./reviewGameScreen";
+export { CreateGameScreen, ReviewGameScreen } from "./createGame";
 export { WelcomeScreen } from "./welcomeScreen";
