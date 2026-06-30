@@ -1,5 +1,6 @@
 import { Button, DatePicker, NumberInput, Select, TextInputField, TimePicker } from "@/components";
 import { spacing } from "@/theme";
+import { router } from "expo-router";
 import { Controller, useFormContext } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 import { CreateGameFormValues } from "../schemas";
@@ -27,7 +28,7 @@ export function GameDetailsStep() {
 	];
 
 	function handleContinue(values: CreateGameFormValues) {
-		console.log("Game details values", values);
+		router.push("/review-game");
 	}
 
 	return (

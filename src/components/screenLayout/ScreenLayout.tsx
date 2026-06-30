@@ -13,13 +13,13 @@ export function ScreenLayout({ children }: PropsWithChildren) {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		alignItems: "center",
+		flex: 1,
 		justifyContent: "center",
 	},
 	content: {
 		flex: 1,
-		width: "100%",
 		paddingHorizontal: spacing[6],
+		width: "100%",
 	},
 });

@@ -4,15 +4,15 @@ import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
 import {
-    Animated,
-    Keyboard,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableWithoutFeedback,
-    View,
+	Animated,
+	Keyboard,
+	Modal,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableWithoutFeedback,
+	View,
 } from "react-native";
 
 import { TimePickerProps } from "./types";
