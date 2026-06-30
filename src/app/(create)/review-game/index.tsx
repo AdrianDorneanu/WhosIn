@@ -1,14 +1,16 @@
 import { ScreenHeader } from "@/components";
+import { ReviewGameScreen } from "@/features";
 import { spacing } from "@/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ReviewGameRoute() {
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<ScreenHeader title="Review the game" />
 
-			<Text>Text123</Text>
-		</View>
+			<ReviewGameScreen />
+		</SafeAreaView>
 	);
 }
 
@@ -17,5 +19,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		gap: spacing[6],
 		minHeight: 0,
+		paddingHorizontal: spacing[6],
 	},
 });
