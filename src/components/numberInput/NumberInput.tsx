@@ -1,13 +1,38 @@
+import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, spacing, typography } from "@/theme";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Animated, Keyboard, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { NumberInputProps } from "./types";
 
-export function NumberInput({ label, value, min = 0, max, step = 1, error, required, onValueChange }: NumberInputProps) {
+export function NumberInput({
+	label,
+	value,
+	min = 0,
+	max,
+	step = 1,
+	error,
+	required,
+	onValueChange,
+}: NumberInputProps) {
+	const [isFocused, setIsFocused] = useState(false);
 	const canDecrease = value > min;
 	const canIncrease = max === undefined || value < max;
+	const animatedInputStyle = useFocusBorderStyle(isFocused, Boolean(error));
+
+	useEffect(() => {
+		const subscription = Keyboard.addListener("keyboardDidShow", () => setIsFocused(false));
+
+		return () => subscription.remove();
+	}, []);
+
+	function handleControlPressIn() {
+		Keyboard.dismiss();
+
+		setIsFocused(true);
+	}
 
 	function updateValue(nextValue: number) {
 		const withMin = Math.max(min, nextValue);
@@ -18,19 +43,22 @@ export function NumberInput({ label, value, min = 0, max, step = 1, error, requi
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.label}>
+			<Text style={[styles.label, isFocused && styles.labelFocused, error && styles.labelError]}>
 				{label}
 				{required ? <Text style={styles.required}> *</Text> : null}
 			</Text>
 
-			<View style={[styles.input, error && styles.inputError]}>
+			<Animated.View style={[styles.input, animatedInputStyle, error && styles.inputError]}>
 				<Text style={styles.value}>{value}</Text>
 
 				<View style={styles.controls}>
 					<Pressable
 						accessibilityRole="button"
 						disabled={!canDecrease}
+						onBlur={() => setIsFocused(false)}
+						onFocus={() => setIsFocused(true)}
 						onPress={() => updateValue(value - step)}
+						onPressIn={handleControlPressIn}
 						style={({ pressed }) => [
 							styles.controlButton,
 							pressed && canDecrease && styles.controlButtonPressed,
@@ -47,7 +75,10 @@ export function NumberInput({ label, value, min = 0, max, step = 1, error, requi
 					<Pressable
 						accessibilityRole="button"
 						disabled={!canIncrease}
+						onBlur={() => setIsFocused(false)}
+						onFocus={() => setIsFocused(true)}
 						onPress={() => updateValue(value + step)}
+						onPressIn={handleControlPressIn}
 						style={({ pressed }) => [
 							styles.controlButton,
 							pressed && canIncrease && styles.controlButtonPressed,
@@ -61,7 +92,7 @@ export function NumberInput({ label, value, min = 0, max, step = 1, error, requi
 						/>
 					</Pressable>
 				</View>
-			</View>
+			</Animated.View>
 
 			{error ? <Text style={styles.error}>{error}</Text> : null}
 		</View>
@@ -77,6 +108,12 @@ const styles = StyleSheet.create({
 		...typography.caption,
 		fontFamily: typography.button.fontFamily,
 	},
+	labelFocused: {
+		color: colors.primary.dark,
+	},
+	labelError: {
+		color: colors.danger.main,
+	},
 	input: {
 		alignItems: "center",
 		backgroundColor: colors.background.card,
@@ -89,7 +126,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: spacing[3],
 	},
 	inputError: {
-		backgroundColor: colors.danger.light,
 		borderColor: colors.danger.outline,
 	},
 	value: {

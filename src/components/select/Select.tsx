@@ -1,8 +1,19 @@
+import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, spacing, typography } from "@/theme";
 import { faCheck, faChevronDown, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
-import { Animated, Modal, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import {
+	Animated,
+	Keyboard,
+	Modal,
+	Pressable,
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableWithoutFeedback,
+	View,
+} from "react-native";
 
 import { SelectProps } from "./types";
 
@@ -22,12 +33,15 @@ export function Select({
 	const [draftValue, setDraftValue] = useState(value);
 	const [drawerProgress] = useState(() => new Animated.Value(0));
 
+	const animatedTriggerStyle = useFocusBorderStyle(isOpen, Boolean(error));
+
 	const selectedOption = options.find((option) => option.value === value);
 	const filteredOptions = options.filter((option) =>
 		option.label.toLowerCase().includes(search.trim().toLowerCase()),
 	);
 
 	function openDrawer() {
+		Keyboard.dismiss();
 		setDraftValue(value);
 		setSearch("");
 		setIsOpen(true);
@@ -61,23 +75,30 @@ export function Select({
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.label}>
+			<Text style={[styles.label, isOpen && styles.labelFocused, error && styles.labelError]}>
 				{label}
 				{required ? <Text style={styles.required}> *</Text> : null}
 			</Text>
 
-			<Pressable
-				accessibilityRole="button"
-				onPress={openDrawer}
-				style={({ pressed }) => [styles.trigger, error && styles.triggerError, pressed && styles.triggerPressed]}
-			>
-				<View style={styles.valueContainer}>
-					<Text numberOfLines={1} style={[styles.value, !selectedOption && styles.placeholder]}>
-						{selectedOption?.label ?? placeholder}
-					</Text>
-				</View>
+			<Pressable accessibilityRole="button" onPress={openDrawer}>
+				{({ pressed }) => (
+					<Animated.View
+						style={[
+							styles.trigger,
+							animatedTriggerStyle,
+							error && styles.triggerError,
+							pressed && styles.triggerPressed,
+						]}
+					>
+						<View style={styles.valueContainer}>
+							<Text numberOfLines={1} style={[styles.value, !selectedOption && styles.placeholder]}>
+								{selectedOption?.label ?? placeholder}
+							</Text>
+						</View>
 
-				<FontAwesomeIcon color={colors.text.secondary} icon={faChevronDown} size={14} />
+						<FontAwesomeIcon color={colors.text.secondary} icon={faChevronDown} size={14} />
+					</Animated.View>
+				)}
 			</Pressable>
 
 			{error ? <Text style={styles.error}>{error}</Text> : null}
@@ -203,6 +224,12 @@ const styles = StyleSheet.create({
 		...typography.caption,
 		fontFamily: typography.button.fontFamily,
 	},
+	labelFocused: {
+		color: colors.primary.dark,
+	},
+	labelError: {
+		color: colors.danger.main,
+	},
 	trigger: {
 		alignItems: "center",
 		backgroundColor: colors.background.card,
@@ -218,7 +245,6 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.secondary.pressed,
 	},
 	triggerError: {
-		backgroundColor: colors.danger.light,
 		borderColor: colors.danger.outline,
 	},
 	valueContainer: {

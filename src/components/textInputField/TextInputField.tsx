@@ -1,7 +1,11 @@
+import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, spacing, typography } from "@/theme";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Animated, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { TextInputFieldProps } from "./types";
+
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export function TextInputField({
 	label,
@@ -14,21 +18,31 @@ export function TextInputField({
 	multiline,
 	returnKeyType,
 }: TextInputFieldProps) {
+	const [isFocused, setIsFocused] = useState(false);
+	const animatedInputStyle = useFocusBorderStyle(isFocused, Boolean(error));
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.label}>
+			<Text style={[styles.label, isFocused && styles.labelFocused, error && styles.labelError]}>
 				{label}
 				{required ? <Text style={styles.required}> *</Text> : null}
 			</Text>
 
-			<TextInput
+			<AnimatedTextInput
 				keyboardType={keyboardType}
 				multiline={multiline}
+				onBlur={() => setIsFocused(false)}
 				onChangeText={onChangeText}
+				onFocus={() => setIsFocused(true)}
 				placeholder={placeholder}
 				placeholderTextColor={colors.text.muted}
 				returnKeyType={returnKeyType}
-				style={[styles.input, error && styles.inputError, multiline && styles.multilineInput]}
+				style={[
+					styles.input,
+					animatedInputStyle,
+					error && styles.inputError,
+					multiline && styles.multilineInput,
+				]}
 				value={value}
 			/>
 
@@ -46,6 +60,12 @@ const styles = StyleSheet.create({
 		...typography.caption,
 		fontFamily: typography.button.fontFamily,
 	},
+	labelFocused: {
+		color: colors.primary.dark,
+	},
+	labelError: {
+		color: colors.danger.main,
+	},
 	input: {
 		backgroundColor: colors.background.card,
 		borderColor: colors.border.strong,
@@ -57,7 +77,6 @@ const styles = StyleSheet.create({
 		...typography.bodyMedium,
 	},
 	inputError: {
-		backgroundColor: colors.danger.light,
 		borderColor: colors.danger.outline,
 	},
 	multilineInput: {
