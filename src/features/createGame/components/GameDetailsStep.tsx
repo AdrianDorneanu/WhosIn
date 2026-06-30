@@ -1,17 +1,17 @@
 import { Button, DatePicker, NumberInput, Select, TextInputField, TimePicker } from "@/components";
 import { spacing } from "@/theme";
 import { router } from "expo-router";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 
 import { useCreateGameDraft } from "../context";
 import { CreateGameFormValues } from "../schemas/createGameSchema";
 
 export function GameDetailsStep() {
-	const { control, handleSubmit, watch } = useFormContext<CreateGameFormValues>();
+	const { control, handleSubmit } = useFormContext<CreateGameFormValues>();
 	const { setDraft } = useCreateGameDraft();
 
-	const startTime = watch("startTime");
+	const startTime = useWatch({ control, name: "startTime" });
 
 	const sportOptions = [
 		{

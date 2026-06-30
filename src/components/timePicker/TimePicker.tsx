@@ -48,7 +48,7 @@ function isAfterMinTime(value: string, minTime?: string) {
 	const time = DateTime.fromFormat(value, "HH:mm");
 	const min = DateTime.fromFormat(minTime, "HH:mm");
 
-	return time.isValid && min.isValid && time > min;
+	return time.isValid && min.isValid && time.toMillis() > min.toMillis();
 }
 
 export function TimePicker({
@@ -64,7 +64,7 @@ export function TimePicker({
 	const [isOpen, setIsOpen] = useState(false);
 	const [draftValue, setDraftValue] = useState(value);
 	const [drawerProgress] = useState(() => new Animated.Value(0));
-	const formattedValue = formatTime(value);
+	const formattedValue = value && isAfterMinTime(value, minTime) ? formatTime(value) : undefined;
 	const filteredTimeOptions = timeOptions.filter((option) => isAfterMinTime(option.value, minTime));
 	const animatedTriggerStyle = useFocusBorderStyle(isOpen, Boolean(error));
 
