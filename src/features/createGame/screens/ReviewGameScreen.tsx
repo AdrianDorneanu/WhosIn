@@ -20,12 +20,16 @@ export function ReviewGameScreen() {
 		return null;
 	}
 
+	function handleCreateGame() {
+		router.push("/account-required");
+	}
+
 	return (
 		<View style={styles.container}>
 			<ReviewGameStep draft={draft} />
 
 			<View style={styles.footer}>
-				<Button title="Create game" onPress={() => null} />
+				<Button title="Create game" onPress={handleCreateGame} />
 			</View>
 		</View>
 	);

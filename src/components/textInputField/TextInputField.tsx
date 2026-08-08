@@ -14,9 +14,12 @@ export function TextInputField({
 	error,
 	required,
 	onChangeText,
+	autoCapitalize,
+	autoComplete,
 	keyboardType,
 	multiline,
 	returnKeyType,
+	secureTextEntry,
 }: TextInputFieldProps) {
 	const [isFocused, setIsFocused] = useState(false);
 	const animatedInputStyle = useFocusBorderStyle(isFocused, Boolean(error));
@@ -29,6 +32,8 @@ export function TextInputField({
 			</Text>
 
 			<AnimatedTextInput
+				autoCapitalize={autoCapitalize}
+				autoComplete={autoComplete}
 				keyboardType={keyboardType}
 				multiline={multiline}
 				onBlur={() => setIsFocused(false)}
@@ -37,6 +42,7 @@ export function TextInputField({
 				placeholder={placeholder}
 				placeholderTextColor={colors.text.muted}
 				returnKeyType={returnKeyType}
+				secureTextEntry={secureTextEntry}
 				style={[
 					styles.input,
 					animatedInputStyle,

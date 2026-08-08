@@ -1,16 +1,16 @@
 import { Button, DatePicker, NumberInput, Select, TextInputField, TimePicker } from "@/components";
 import { spacing } from "@/theme";
-import { router } from "expo-router";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 
-import { useCreateGameDraft } from "../context";
 import { CreateGameFormValues } from "../schemas/createGameSchema";
 
-export function GameDetailsStep() {
-	const { control, handleSubmit } = useFormContext<CreateGameFormValues>();
-	const { setDraft } = useCreateGameDraft();
+interface GameDetailsStepProps {
+	onContinue: () => void;
+}
 
+export function GameDetailsStep({ onContinue }: GameDetailsStepProps) {
+	const { control } = useFormContext<CreateGameFormValues>();
 	const startTime = useWatch({ control, name: "startTime" });
 
 	const sportOptions = [
@@ -31,12 +31,6 @@ export function GameDetailsStep() {
 			value: "other",
 		},
 	];
-
-	function handleContinue(values: CreateGameFormValues) {
-		setDraft(values);
-
-		router.push("/review-game");
-	}
 
 	return (
 		<View style={styles.form}>
@@ -183,7 +177,7 @@ export function GameDetailsStep() {
 				)}
 			/>
 
-			<Button title="Continue" onPress={handleSubmit(handleContinue)} />
+			<Button title="Continue" onPress={onContinue} />
 		</View>
 	);
 }
