@@ -15,12 +15,7 @@ export function AccountRequired({ onLogin, onSignUp }: AccountRequiredProps) {
 		<View style={styles.container}>
 			<View style={styles.content}>
 				<View style={styles.imageContainer}>
-					<Image
-						accessibilityLabel="Lock"
-						contentFit="contain"
-						source={lockImage}
-						style={styles.image}
-					/>
+					<Image accessibilityLabel="Lock" contentFit="contain" source={lockImage} style={styles.image} />
 				</View>
 
 				<View style={styles.copy}>

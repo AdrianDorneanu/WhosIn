@@ -26,10 +26,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 	}
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : undefined}
-			style={styles.container}
-		>
+		<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
 			<View style={styles.copy}>
 				<Text style={styles.title}>{isLogin ? "Welcome back" : "Create your account"}</Text>
 				<Text style={styles.description}>
@@ -69,10 +66,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				/>
 			</View>
 
-			<Button
-				title={isLogin ? "Log in and continue" : "Create account and continue"}
-				onPress={handleContinue}
-			/>
+			<Button title={isLogin ? "Log in and continue" : "Create account and continue"} onPress={handleContinue} />
 		</KeyboardAvoidingView>
 	);
 }
