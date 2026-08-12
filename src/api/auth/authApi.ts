@@ -9,8 +9,8 @@ export function login(payload: LoginRequest): Promise<AuthResponse> {
 	});
 }
 
-export function signup(payload: SignupRequest): Promise<AuthResponse> {
-	return apiClient<AuthResponse>("/auth/signup", {
+export function signup(payload: SignupRequest): Promise<SignupResponse> {
+	return apiClient<SignupResponse>("/auth/signup", {
 		method: "POST",
 		body: JSON.stringify(payload),
 		skipAuth: true,

@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { login } from "./authApi";
 import { useAuthStore } from "@/stores";
+import { saveTokens } from "@/storages";
 
 export function useLogin() {
 	const setTokens = useAuthStore((state) => state.setTokens);
@@ -9,11 +10,10 @@ export function useLogin() {
 	return useMutation({
 		mutationFn: login,
 
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
+			await saveTokens(data.accessToken, data.refreshToken);
+
 			setTokens(data.accessToken, data.refreshToken);
-		},
-		onError: (error) => {
-			console.error(error);
 		},
 	});
 }

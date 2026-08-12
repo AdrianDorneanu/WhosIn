@@ -1,7 +1,17 @@
 import { AuthResponse } from "@/api/auth/auth.types";
 import { useAuthStore } from "@/stores";
+import { clearTokens, saveTokens } from "@/storages";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+interface ApiErrorResponse {
+	status: number;
+	error: string;
+	message: string;
+	path: string;
+	timestamp: string;
+	validationErrors?: Record<string, string> | null;
+}
 
 type ApiClientOptions = RequestInit & {
 	skipAuth?: boolean;
@@ -32,7 +42,9 @@ export async function apiClient<T>(path: string, options: ApiClientOptions = {})
 	}
 
 	if (!response.ok) {
-		throw new Error(`API error: ${response.status}`);
+		const errorData: ApiErrorResponse = await response.json();
+
+		throw new Error(errorData.message || `API error: ${response.status}`);
 	}
 
 	return await response.json();
@@ -58,12 +70,16 @@ async function refreshAndRetry<T>(path: string, options: RequestInit): Promise<T
 	});
 
 	if (!response.ok) {
+		await clearTokens();
+
 		clearAuth();
 
 		throw new Error("Session expired");
 	}
 
 	const tokens: AuthResponse = await response.json();
+
+	await saveTokens(tokens.accessToken, tokens.refreshToken);
 
 	setTokens(tokens.accessToken, tokens.refreshToken);
 

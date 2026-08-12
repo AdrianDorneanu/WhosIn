@@ -1,34 +1,85 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, TextInputField } from "@/components";
-import { spacing, typography } from "@/theme";
-import { useState } from "react";
+import { useLogin } from "@/api/auth/useLogin";
+import { useSignup } from "@/api/auth/useSignup";
+import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+
+import { LoginFormValues, loginSchema, SignupFormValues, signupSchema } from "../schemas/authSchema";
+import { colors, spacing, typography } from "@/theme";
+import { router } from "expo-router";
 
 interface AuthScreenProps {
 	mode: "login" | "signup";
 }
 
+type AuthFormValues = LoginFormValues | SignupFormValues;
+
 export function AuthScreen({ mode }: AuthScreenProps) {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [error, setError] = useState<string>();
 	const isLogin = mode === "login";
 
-	function handleContinue() {
-		const normalizedEmail = email.trim().toLowerCase();
+	const [formError, setFormError] = useState<string>();
 
-		if (!normalizedEmail || !password) {
-			setError("Enter your email and password.");
+	const loginMutation = useLogin();
+	const signupMutation = useSignup();
+
+	const { control, handleSubmit } = useForm<AuthFormValues>({
+		resolver: zodResolver(isLogin ? loginSchema : signupSchema),
+		defaultValues: {
+			email: "",
+			password: "",
+			...(isLogin ? {} : { displayName: "" }),
+		},
+	});
+
+	const isPending = loginMutation.isPending || signupMutation.isPending;
+
+	const onSubmit = (values: AuthFormValues) => {
+		setFormError(undefined);
+
+		const normalizedEmail = values.email.trim().toLowerCase();
+
+		if (isLogin) {
+			loginMutation.mutate(
+				{
+					email: normalizedEmail,
+					password: values.password,
+				},
+				{
+					onError: (error) => {
+						setFormError(error.message);
+					},
+				},
+			);
 
 			return;
 		}
 
-		setError("Authentication will be connected to the API.");
-	}
+		const signupValues = values as SignupFormValues;
+
+		signupMutation.mutate(
+			{
+				email: normalizedEmail,
+				password: signupValues.password,
+				displayName: signupValues.displayName.trim(),
+			},
+			{
+				onSuccess: () => {
+					router.replace("/login");
+				},
+				onError: (error) => {
+					setFormError(error.message);
+				},
+			},
+		);
+	};
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
 			<View style={styles.copy}>
 				<Text style={styles.title}>{isLogin ? "Welcome back" : "Create your account"}</Text>
+
 				<Text style={styles.description}>
 					{isLogin
 						? "Log in to continue saving your game."
@@ -37,36 +88,74 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 			</View>
 
 			<View style={styles.form}>
-				<TextInputField
-					autoCapitalize="none"
-					autoComplete="email"
-					error={error}
-					keyboardType="email-address"
-					label="Email"
-					onChangeText={(value) => {
-						setEmail(value);
-						setError(undefined);
-					}}
-					placeholder="you@example.com"
-					required
-					value={email}
+				{!isLogin && (
+					<Controller
+						control={control}
+						name="displayName"
+						render={({ field, fieldState }) => (
+							<TextInputField
+								label="Name"
+								value={field.value ?? ""}
+								onChangeText={field.onChange}
+								error={fieldState.error?.message}
+								required
+							/>
+						)}
+					/>
+				)}
+
+				<Controller
+					control={control}
+					name="email"
+					render={({ field, fieldState }) => (
+						<TextInputField
+							autoCapitalize="none"
+							autoComplete="email"
+							keyboardType="email-address"
+							label="Email"
+							placeholder="you@example.com"
+							required
+							value={field.value}
+							onChangeText={field.onChange}
+							error={fieldState.error?.message}
+						/>
+					)}
 				/>
-				<TextInputField
-					autoCapitalize="none"
-					autoComplete={isLogin ? "current-password" : "new-password"}
-					label="Password"
-					onChangeText={(value) => {
-						setPassword(value);
-						setError(undefined);
-					}}
-					placeholder="Enter your password"
-					required
-					secureTextEntry
-					value={password}
+
+				<Controller
+					control={control}
+					name="password"
+					render={({ field, fieldState }) => (
+						<TextInputField
+							autoCapitalize="none"
+							autoComplete={isLogin ? "current-password" : "new-password"}
+							label="Password"
+							placeholder="Enter your password"
+							required
+							secureTextEntry
+							value={field.value}
+							onChangeText={field.onChange}
+							error={fieldState.error?.message}
+						/>
+					)}
 				/>
+
+				{formError && <Text style={styles.formError}>{formError}</Text>}
 			</View>
 
-			<Button title={isLogin ? "Log in and continue" : "Create account and continue"} onPress={handleContinue} />
+			<Button
+				disabled={isPending}
+				title={
+					isPending
+						? isLogin
+							? "Logging in..."
+							: "Creating account..."
+						: isLogin
+							? "Log in and continue"
+							: "Create account and continue"
+				}
+				onPress={handleSubmit(onSubmit)}
+			/>
 		</KeyboardAvoidingView>
 	);
 }
@@ -90,5 +179,9 @@ const styles = StyleSheet.create({
 	},
 	form: {
 		gap: spacing[4],
+	},
+	formError: {
+		color: colors.danger.main,
+		...typography.body,
 	},
 });
