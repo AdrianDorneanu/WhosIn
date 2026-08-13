@@ -12,8 +12,6 @@ export default function RootLayout() {
 	const isHydrated = useAuthStore((state) => state.isHydrated);
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-	console.log(isAuthenticated);
-
 	useEffect(() => {
 		void restoreAuth();
 	}, []);
