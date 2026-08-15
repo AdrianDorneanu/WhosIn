@@ -45,6 +45,8 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				},
 				{
 					onSuccess: () => {
+						router.replace("/home");
+
 						toast.success({
 							title: "Welcome back!",
 						});

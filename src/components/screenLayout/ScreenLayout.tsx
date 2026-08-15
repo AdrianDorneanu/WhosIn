@@ -1,11 +1,15 @@
 import { spacing } from "@/theme";
 import { PropsWithChildren } from "react";
 import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, SafeAreaViewProps } from "react-native-safe-area-context";
 
-export function ScreenLayout({ children }: PropsWithChildren) {
+interface ScreenLayoutProps extends PropsWithChildren {
+	edges?: SafeAreaViewProps["edges"];
+}
+
+export function ScreenLayout({ children, edges }: ScreenLayoutProps) {
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView edges={edges} style={styles.container}>
 			<View style={styles.content}>{children}</View>
 		</SafeAreaView>
 	);
