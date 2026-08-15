@@ -160,8 +160,8 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 							? "Logging in..."
 							: "Creating account..."
 						: isLogin
-							? "Log in and continue"
-							: "Create account and continue"
+							? "Log in"
+							: "Create account"
 				}
 				onPress={handleSubmit(onSubmit)}
 			/>
