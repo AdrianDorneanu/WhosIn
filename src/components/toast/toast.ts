@@ -2,6 +2,10 @@ import Toast from "react-native-toast-message";
 
 export type AppToastType = "success" | "info" | "error";
 
+export const DEFAULT_TOAST_DURATION = 3000;
+
+let toastSequence = 0;
+
 export interface ShowToastOptions {
 	description?: string;
 	duration?: number;
@@ -10,12 +14,18 @@ export interface ShowToastOptions {
 }
 
 function show(type: AppToastType, options: ShowToastOptions) {
+	const duration = options.duration ?? DEFAULT_TOAST_DURATION;
+
 	Toast.show({
 		onPress: options.onPress,
+		props: {
+			animationKey: ++toastSequence,
+			duration,
+		},
 		text1: options.title,
 		text2: options.description,
 		type,
-		visibilityTime: options.duration,
+		visibilityTime: duration,
 	});
 }
 

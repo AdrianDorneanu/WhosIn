@@ -4,10 +4,9 @@ import { useLogin } from "@/api/auth/useLogin";
 import { useSignup } from "@/api/auth/useSignup";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
-import { useState } from "react";
 
 import { LoginFormValues, loginSchema, SignupFormValues, signupSchema } from "../schemas/authSchema";
-import { colors, spacing, typography } from "@/theme";
+import { spacing, typography } from "@/theme";
 import { router } from "expo-router";
 
 interface AuthScreenProps {
@@ -18,8 +17,6 @@ type AuthFormValues = LoginFormValues | SignupFormValues;
 
 export function AuthScreen({ mode }: AuthScreenProps) {
 	const isLogin = mode === "login";
-
-	const [formError, setFormError] = useState<string>();
 
 	const loginMutation = useLogin();
 	const signupMutation = useSignup();
@@ -36,7 +33,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 	const isPending = loginMutation.isPending || signupMutation.isPending;
 
 	const onSubmit = (values: AuthFormValues) => {
-		setFormError(undefined);
+		toast.hide();
 
 		const normalizedEmail = values.email.trim().toLowerCase();
 
@@ -53,7 +50,11 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 						});
 					},
 					onError: (error) => {
-						setFormError(error.message);
+						toast.error({
+							description: error.message,
+							duration: 8000,
+							title: "Login failed",
+						});
 					},
 				},
 			);
@@ -78,7 +79,11 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 					});
 				},
 				onError: (error) => {
-					setFormError(error.message);
+					toast.error({
+						description: error.message,
+						duration: 8000,
+						title: "Account creation failed",
+					});
 				},
 			},
 		);
@@ -148,8 +153,6 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 						/>
 					)}
 				/>
-
-				{formError && <Text style={styles.formError}>{formError}</Text>}
 			</View>
 
 			<Button
@@ -188,9 +191,5 @@ const styles = StyleSheet.create({
 	},
 	form: {
 		gap: spacing[4],
-	},
-	formError: {
-		color: colors.danger.main,
-		...typography.body,
 	},
 });

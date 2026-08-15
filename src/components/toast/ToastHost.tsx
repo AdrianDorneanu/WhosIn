@@ -2,10 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleCheck, faCircleExclamation, faCircleInfo, faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import Toast, { type ToastConfig, type ToastConfigParams } from "react-native-toast-message";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors, fontFamily, spacing, typography } from "@/theme";
+import { DEFAULT_TOAST_DURATION } from "./toast";
 
 type AppToastType = "success" | "info" | "error";
 
@@ -38,14 +40,31 @@ const variants: Record<AppToastType, ToastVariant> = {
 };
 
 interface ToastCardProps {
+	animationKey: number;
 	description?: string;
+	duration: number;
 	onClose: () => void;
 	title?: string;
 	type: AppToastType;
 }
 
-function ToastCard({ description, onClose, title, type }: ToastCardProps) {
+function ToastCard({ animationKey, description, duration, onClose, title, type }: ToastCardProps) {
 	const variant = variants[type];
+	const [progress] = useState(() => new Animated.Value(1));
+
+	useEffect(() => {
+		progress.setValue(1);
+
+		const animation = Animated.timing(progress, {
+			duration,
+			toValue: 0,
+			useNativeDriver: false,
+		});
+
+		animation.start();
+
+		return () => animation.stop();
+	}, [animationKey, duration, progress]);
 
 	return (
 		<View
@@ -75,13 +94,41 @@ function ToastCard({ description, onClose, title, type }: ToastCardProps) {
 			>
 				<FontAwesomeIcon color={colors.text.secondary} icon={faXmark} size={spacing[4]} />
 			</Pressable>
+
+			<Animated.View
+				pointerEvents="none"
+				style={[
+					styles.progress,
+					{
+						backgroundColor: variant.iconColor,
+						width: progress.interpolate({
+							inputRange: [0, 1],
+							outputRange: ["0%", "100%"],
+						}),
+					},
+				]}
+			/>
 		</View>
 	);
 }
 
 function createToastRenderer(type: AppToastType): ToastConfig[string] {
-	function ToastRenderer({ hide, text1, text2 }: ToastConfigParams<unknown>) {
-		return <ToastCard description={text2} onClose={hide} title={text1} type={type} />;
+	function ToastRenderer({
+		hide,
+		props,
+		text1,
+		text2,
+	}: ToastConfigParams<{ animationKey?: number; duration?: number }>) {
+		return (
+			<ToastCard
+				animationKey={props.animationKey ?? 0}
+				description={text2}
+				duration={props.duration ?? DEFAULT_TOAST_DURATION}
+				onClose={hide}
+				title={text1}
+				type={type}
+			/>
+		);
 	}
 
 	return ToastRenderer;
@@ -102,7 +149,7 @@ export function ToastHost() {
 			config={toastConfig}
 			position="bottom"
 			swipeable
-			visibilityTime={3000}
+			visibilityTime={DEFAULT_TOAST_DURATION}
 		/>
 	);
 }
@@ -117,6 +164,7 @@ const styles = StyleSheet.create({
 		gap: spacing[3],
 		maxWidth: 480,
 		minHeight: spacing[16],
+		overflow: "hidden",
 		paddingHorizontal: spacing[3],
 		paddingVertical: spacing[3],
 		shadowColor: colors.text.primary,
@@ -152,5 +200,11 @@ const styles = StyleSheet.create({
 	},
 	closeButtonPressed: {
 		backgroundColor: colors.overlay.dark,
+	},
+	progress: {
+		bottom: 0,
+		height: 3,
+		left: 0,
+		position: "absolute",
 	},
 });
