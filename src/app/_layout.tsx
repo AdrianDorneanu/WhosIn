@@ -6,11 +6,11 @@ import { queryClient } from "@/api";
 import { useAuthStore } from "@/stores";
 import { useEffect } from "react";
 import { restoreAuth } from "@/utils";
+import { ToastHost } from "@/components";
 
 export default function RootLayout() {
 	const fontsLoaded = useAppFonts();
 	const isHydrated = useAuthStore((state) => state.isHydrated);
-	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
 	useEffect(() => {
 		void restoreAuth();
@@ -35,6 +35,7 @@ export default function RootLayout() {
 					},
 				}}
 			/>
+			<ToastHost />
 		</QueryClientProvider>
 	);
 }

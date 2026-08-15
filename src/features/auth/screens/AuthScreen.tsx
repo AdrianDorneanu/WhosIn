@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, TextInputField } from "@/components";
+import { Button, TextInputField, toast } from "@/components";
 import { useLogin } from "@/api/auth/useLogin";
 import { useSignup } from "@/api/auth/useSignup";
 import { Controller, useForm } from "react-hook-form";
@@ -47,6 +47,11 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 					password: values.password,
 				},
 				{
+					onSuccess: () => {
+						toast.success({
+							title: "Welcome back!",
+						});
+					},
 					onError: (error) => {
 						setFormError(error.message);
 					},
@@ -67,6 +72,10 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 			{
 				onSuccess: () => {
 					router.replace("/login");
+
+					toast.success({
+						title: "Account created successfully",
+					});
 				},
 				onError: (error) => {
 					setFormError(error.message);

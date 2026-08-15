@@ -31,7 +31,17 @@ export const colors = {
 	},
 	danger: {
 		main: "#DC2626",
+		light: "#FFF4F4",
+		border: "#FDA4AF",
 		outline: "#F43F5E",
+	},
+	info: {
+		main: "#4F7EE8",
+		light: "#F2F6FF",
+		border: "#A8C2FF",
+	},
+	overlay: {
+		dark: "rgba(17, 24, 39, 0.08)",
 	},
 	green: {
 		50: "#ECFDF3",
