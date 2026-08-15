@@ -17,10 +17,6 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { CreateGameFormValues } from "../schemas/createGameSchema";
 
-interface ReviewGameStepProps {
-	draft: CreateGameFormValues;
-}
-
 const sportMetadata = {
 	football: {
 		label: "Football",
@@ -55,6 +51,10 @@ function getSportMetadata(sport: string) {
 			icon: faTableTennisPaddleBall,
 		}
 	);
+}
+
+interface ReviewGameStepProps {
+	draft: CreateGameFormValues;
 }
 
 export function ReviewGameStep({ draft }: ReviewGameStepProps) {

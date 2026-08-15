@@ -16,13 +16,6 @@ interface ToastVariant {
 	iconColor: string;
 }
 
-interface ToastCardProps {
-	description?: string;
-	onClose: () => void;
-	title?: string;
-	type: AppToastType;
-}
-
 const variants: Record<AppToastType, ToastVariant> = {
 	success: {
 		backgroundColor: colors.primary.light,
@@ -43,6 +36,13 @@ const variants: Record<AppToastType, ToastVariant> = {
 		iconColor: colors.danger.main,
 	},
 };
+
+interface ToastCardProps {
+	description?: string;
+	onClose: () => void;
+	title?: string;
+	type: AppToastType;
+}
 
 function ToastCard({ description, onClose, title, type }: ToastCardProps) {
 	const variant = variants[type];

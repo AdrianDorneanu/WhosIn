@@ -7,16 +7,9 @@ import { useState } from "react";
 import { Animated, Keyboard, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 
-import { DatePickerProps } from "./types";
-
 interface CalendarMonth {
 	getFullYear: () => number;
 	getMonth: () => number;
-}
-
-interface CalendarHeaderProps {
-	month?: CalendarMonth;
-	addMonth?: (count: number) => void;
 }
 
 function formatDate(value?: string) {
@@ -35,6 +28,11 @@ function formatCalendarMonth(date?: CalendarMonth) {
 	}
 
 	return DateTime.local(date.getFullYear(), date.getMonth() + 1, 1).toFormat("LLLL yyyy");
+}
+
+interface CalendarHeaderProps {
+	month?: CalendarMonth;
+	addMonth?: (count: number) => void;
 }
 
 function CalendarHeader({ month, addMonth }: CalendarHeaderProps) {
@@ -63,6 +61,16 @@ function CalendarHeader({ month, addMonth }: CalendarHeaderProps) {
 			</View>
 		</View>
 	);
+}
+
+interface DatePickerProps {
+	label: string;
+	value?: string;
+	placeholder?: string;
+	drawerTitle?: string;
+	error?: string;
+	required?: boolean;
+	onValueChange: (value: string) => void;
 }
 
 export function DatePicker({

@@ -15,7 +15,22 @@ import {
 	View,
 } from "react-native";
 
-import { SelectProps } from "./types";
+interface SelectOption {
+	label: string;
+	value: string;
+}
+
+interface SelectProps {
+	label: string;
+	options: SelectOption[];
+	value?: string;
+	placeholder?: string;
+	drawerTitle?: string;
+	searchPlaceholder?: string;
+	error?: string;
+	required?: boolean;
+	onValueChange: (value: string) => void;
+}
 
 export function Select({
 	label,

@@ -16,8 +16,6 @@ import {
 	View,
 } from "react-native";
 
-import { TimePickerProps } from "./types";
-
 const timeOptions = Array.from({ length: 48 }, (_, index) => {
 	const hour24 = Math.floor(index / 2);
 	const minutes = index % 2 === 0 ? "00" : "30";
@@ -49,6 +47,17 @@ function isAfterMinTime(value: string, minTime?: string) {
 	const min = DateTime.fromFormat(minTime, "HH:mm");
 
 	return time.isValid && min.isValid && time.toMillis() > min.toMillis();
+}
+
+interface TimePickerProps {
+	label: string;
+	value?: string;
+	placeholder?: string;
+	drawerTitle?: string;
+	error?: string;
+	minTime?: string;
+	required?: boolean;
+	onValueChange: (value: string) => void;
 }
 
 export function TimePicker({

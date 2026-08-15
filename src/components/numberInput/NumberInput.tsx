@@ -3,7 +3,16 @@ import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { NumberInputProps } from "./types";
+interface NumberInputProps {
+	label: string;
+	value: number;
+	min?: number;
+	max?: number;
+	step?: number;
+	error?: string;
+	required?: boolean;
+	onValueChange: (value: number) => void;
+}
 
 export function NumberInput({
 	label,

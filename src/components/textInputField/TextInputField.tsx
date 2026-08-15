@@ -1,11 +1,21 @@
 import { useFocusBorderStyle } from "@/hooks/useFocusBorderStyle";
 import { colors, spacing, typography } from "@/theme";
 import { useState } from "react";
-import { Animated, StyleSheet, Text, TextInput, View } from "react-native";
-
-import { TextInputFieldProps } from "./types";
+import { Animated, StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+
+interface TextInputFieldProps extends Pick<
+	TextInputProps,
+	"autoCapitalize" | "autoComplete" | "keyboardType" | "multiline" | "returnKeyType" | "secureTextEntry"
+> {
+	label: string;
+	value: string;
+	placeholder?: string;
+	error?: string;
+	required?: boolean;
+	onChangeText: (value: string) => void;
+}
 
 export function TextInputField({
 	label,

@@ -1,9 +1,9 @@
 export { Button } from "./button";
-export { DatePicker, type DatePickerProps } from "./datePicker";
-export { NumberInput, type NumberInputProps } from "./numberInput";
+export { DatePicker } from "./datePicker";
+export { NumberInput } from "./numberInput";
 export { ScreenHeader } from "./screenHeader";
 export { ScreenLayout } from "./screenLayout";
-export { Select, type SelectOption, type SelectProps } from "./select";
-export { TextInputField, type TextInputFieldProps } from "./textInputField";
-export { TimePicker, type TimePickerProps } from "./timePicker";
+export { Select } from "./select";
+export { TextInputField } from "./textInputField";
+export { TimePicker } from "./timePicker";
 export { ToastHost, toast, type AppToastType, type ShowToastOptions } from "./toast";
