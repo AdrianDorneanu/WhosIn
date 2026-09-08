@@ -1,7 +1,5 @@
-import { queryClient, useMe } from "@/api";
+import { useLogout, useMe } from "@/api";
 import { Button, Divider } from "@/components";
-import { clearTokens } from "@/storages";
-import { useAuthStore } from "@/stores";
 import { colors, spacing, typography } from "@/theme";
 import { faCalendarDays, faCircleQuestion, faEnvelope, faGear } from "@fortawesome/free-solid-svg-icons";
 import { router } from "expo-router";
@@ -10,15 +8,12 @@ import { ProfileAction } from "@/features/profile/components";
 
 export function ProfileScreen() {
 	const { data: profile } = useMe();
+	const logout = useLogout();
 
 	const { displayName, email } = profile;
 
 	async function handleLogout() {
-		await clearTokens();
-
-		useAuthStore.getState().clearAuth();
-
-		queryClient.clear();
+		await logout();
 
 		router.replace("/login");
 	}
