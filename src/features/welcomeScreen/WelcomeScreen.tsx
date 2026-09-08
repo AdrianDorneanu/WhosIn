@@ -1,4 +1,4 @@
-import { Button, TextLink } from "@/components";
+import { Button } from "@/components";
 import { spacing, typography } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
@@ -15,8 +15,6 @@ export function WelcomeScreen() {
 				<Button title="Create a game" onPress={() => router.push("/create-game")} />
 				<Button title="I received a link" onPress={() => null} preset="secondary" />
 			</View>
-
-			<TextLink label="Log in" onPress={() => router.push("/login")} prompt="Already have an account?" />
 		</View>
 	);
 }

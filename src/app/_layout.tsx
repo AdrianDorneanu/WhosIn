@@ -7,7 +7,6 @@ import { useAuthStore } from "@/stores";
 import { useEffect } from "react";
 import { restoreAuth } from "@/utils";
 import { ToastHost } from "@/components";
-import { CreateGameDraftProvider } from "@/features/createGame";
 
 export default function RootLayout() {
 	const fontsLoaded = useAppFonts();
@@ -27,17 +26,15 @@ export default function RootLayout() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<CreateGameDraftProvider>
-				<Stack
-					screenOptions={{
-						headerShown: false,
-						animation: "slide_from_right",
-						contentStyle: {
-							backgroundColor: colors.white,
-						},
-					}}
-				/>
-			</CreateGameDraftProvider>
+			<Stack
+				screenOptions={{
+					headerShown: false,
+					animation: "slide_from_right",
+					contentStyle: {
+						backgroundColor: colors.white,
+					},
+				}}
+			/>
 			<ToastHost />
 		</QueryClientProvider>
 	);

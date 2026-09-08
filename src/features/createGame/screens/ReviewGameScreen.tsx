@@ -1,9 +1,6 @@
-import { useCreateGame } from "@/api";
-import { Button, toast } from "@/components";
-import { useAuthStore } from "@/stores";
+import { Button } from "@/components";
 import { spacing } from "@/theme";
 import { router } from "expo-router";
-import { DateTime } from "luxon";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -11,9 +8,7 @@ import { ReviewGameStep } from "../components";
 import { useCreateGameDraft } from "../context";
 
 export function ReviewGameScreen() {
-	const { clearDraft, draft } = useCreateGameDraft();
-	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-	const createGameMutation = useCreateGame();
+	const { draft } = useCreateGameDraft();
 
 	useEffect(() => {
 		if (!draft) {
@@ -25,54 +20,8 @@ export function ReviewGameScreen() {
 		return null;
 	}
 
-	const currentDraft = draft;
-
 	function handleCreateGame() {
-		if (!isAuthenticated) {
-			router.push("/account-required");
-			return;
-		}
-
-		const startsAt = DateTime.fromISO(`${currentDraft.date}T${currentDraft.startTime}`).toUTC().toISO();
-		const endsAt = DateTime.fromISO(`${currentDraft.date}T${currentDraft.endTime}`).toUTC().toISO();
-		const costMatch = currentDraft.cost.match(/\d+(?:[.,]\d+)?/);
-
-		if (!startsAt || !endsAt || (currentDraft.cost && !costMatch)) {
-			toast.error({
-				title: "Invalid game details",
-				description: "Check the date, time, and cost before creating the game.",
-			});
-			return;
-		}
-
-		createGameMutation.mutate(
-			{
-				title: currentDraft.title,
-				sport: currentDraft.sport,
-				startsAt,
-				endsAt,
-				location: currentDraft.location,
-				maxPlayers: currentDraft.maxPlayers,
-				costPerPlayer: costMatch ? Number(costMatch[0].replace(",", ".")) : null,
-				notes: currentDraft.notes.trim() || null,
-			},
-			{
-				onSuccess: () => {
-					clearDraft();
-					router.replace("/home");
-					toast.success({
-						title: "Game created successfully",
-					});
-				},
-				onError: (error) => {
-					toast.error({
-						title: "Game creation failed",
-						description: error.message,
-						duration: 8000,
-					});
-				},
-			},
-		);
+		router.push("/account-required");
 	}
 
 	return (
@@ -80,11 +29,7 @@ export function ReviewGameScreen() {
 			<ReviewGameStep draft={draft} />
 
 			<View style={styles.footer}>
-				<Button
-					disabled={createGameMutation.isPending}
-					title={createGameMutation.isPending ? "Creating game..." : "Create game"}
-					onPress={handleCreateGame}
-				/>
+				<Button title="Create game" onPress={handleCreateGame} />
 			</View>
 		</View>
 	);

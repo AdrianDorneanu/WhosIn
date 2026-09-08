@@ -11,12 +11,11 @@ import { router } from "expo-router";
 
 interface AuthScreenProps {
 	mode: "login" | "signup";
-	returnTo?: "/review-game";
 }
 
 type AuthFormValues = LoginFormValues | SignupFormValues;
 
-export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
+export function AuthScreen({ mode }: AuthScreenProps) {
 	const isLogin = mode === "login";
 
 	const loginMutation = useLogin();
@@ -46,7 +45,7 @@ export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
 				},
 				{
 					onSuccess: () => {
-						router.replace(returnTo ?? "/home");
+						router.replace("/home");
 
 						toast.success({
 							title: "Welcome back!",
@@ -75,14 +74,28 @@ export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
 			},
 			{
 				onSuccess: () => {
-					router.replace({
-						pathname: "/login",
-						params: returnTo ? { returnTo } : {},
-					});
+					loginMutation.mutate(
+						{
+							email: normalizedEmail,
+							password: signupValues.password,
+						},
+						{
+							onSuccess: () => {
+								router.replace("/home");
 
-					toast.success({
-						title: "Account created successfully",
-					});
+								toast.success({
+									title: "Account created successfully",
+								});
+							},
+							onError: (error) => {
+								toast.error({
+									description: error.message,
+									duration: 8000,
+									title: "Account created, but login failed",
+								});
+							},
+						},
+					);
 				},
 				onError: (error) => {
 					toast.error({
@@ -102,9 +115,7 @@ export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
 
 				<Text style={styles.description}>
 					{isLogin
-						? returnTo
-							? "Log in to continue saving your game."
-							: "Log in to view and manage your games."
+						? "Log in to continue saving your game."
 						: "Create an account to save and manage your games."}
 				</Text>
 			</View>
@@ -177,16 +188,7 @@ export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
 				onPress={handleSubmit(onSubmit)}
 			/>
 			{!isLogin ? (
-				<TextLink
-					label="Log in"
-					onPress={() =>
-						router.push({
-							pathname: "/login",
-							params: returnTo ? { returnTo } : {},
-						})
-					}
-					prompt="Already have an account?"
-				/>
+				<TextLink label="Log in" onPress={() => router.push("/login")} prompt="Already have an account?" />
 			) : null}
 		</KeyboardAvoidingView>
 	);
