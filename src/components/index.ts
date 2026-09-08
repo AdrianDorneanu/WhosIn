@@ -6,4 +6,5 @@ export { ScreenLayout } from "./screenLayout";
 export { Select } from "./select";
 export { TextInputField } from "./textInputField";
 export { TimePicker } from "./timePicker";
+export { TextLink } from "./textLink/TextLink";
 export { ToastHost, toast, type AppToastType, type ShowToastOptions } from "./toast";

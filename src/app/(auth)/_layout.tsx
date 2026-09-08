@@ -1,7 +1,7 @@
 import { colors } from "@/theme";
 import { Stack } from "expo-router";
 
-export default function CreateGameLayout() {
+export default function AuthLayout() {
 	return (
 		<Stack
 			screenOptions={{

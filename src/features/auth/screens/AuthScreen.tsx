@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, TextInputField, toast } from "@/components";
+import { Button, TextInputField, TextLink, toast } from "@/components";
 import { useLogin } from "@/api/auth/useLogin";
 import { useSignup } from "@/api/auth/useSignup";
 import { Controller, useForm } from "react-hook-form";
@@ -11,11 +11,12 @@ import { router } from "expo-router";
 
 interface AuthScreenProps {
 	mode: "login" | "signup";
+	returnTo?: "/review-game";
 }
 
 type AuthFormValues = LoginFormValues | SignupFormValues;
 
-export function AuthScreen({ mode }: AuthScreenProps) {
+export function AuthScreen({ mode, returnTo }: AuthScreenProps) {
 	const isLogin = mode === "login";
 
 	const loginMutation = useLogin();
@@ -45,7 +46,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				},
 				{
 					onSuccess: () => {
-						router.replace("/home");
+						router.replace(returnTo ?? "/home");
 
 						toast.success({
 							title: "Welcome back!",
@@ -74,7 +75,10 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 			},
 			{
 				onSuccess: () => {
-					router.replace("/login");
+					router.replace({
+						pathname: "/login",
+						params: returnTo ? { returnTo } : {},
+					});
 
 					toast.success({
 						title: "Account created successfully",
@@ -98,7 +102,9 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
 				<Text style={styles.description}>
 					{isLogin
-						? "Log in to continue saving your game."
+						? returnTo
+							? "Log in to continue saving your game."
+							: "Log in to view and manage your games."
 						: "Create an account to save and manage your games."}
 				</Text>
 			</View>
@@ -170,6 +176,18 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				}
 				onPress={handleSubmit(onSubmit)}
 			/>
+			{!isLogin ? (
+				<TextLink
+					label="Log in"
+					onPress={() =>
+						router.push({
+							pathname: "/login",
+							params: returnTo ? { returnTo } : {},
+						})
+					}
+					prompt="Already have an account?"
+				/>
+			) : null}
 		</KeyboardAvoidingView>
 	);
 }
