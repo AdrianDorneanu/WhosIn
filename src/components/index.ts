@@ -1,5 +1,6 @@
 export { Button } from "./button";
 export { DatePicker } from "./datePicker";
+export { Divider } from "./divider";
 export { NumberInput } from "./numberInput";
 export { ScreenHeader } from "./screenHeader";
 export { ScreenLayout } from "./screenLayout";

@@ -1,21 +1,9 @@
-import { ScreenHeader } from "@/components";
-import { AuthScreen } from "@/features";
-import { spacing } from "@/theme";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthLayout, AuthScreen } from "@/features";
 
 export default function SignUpRoute() {
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScreenHeader title="Create account" />
+		<AuthLayout title="Create account">
 			<AuthScreen mode="signup" />
-		</SafeAreaView>
+		</AuthLayout>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingHorizontal: spacing[6],
-	},
-});

@@ -1,4 +1,4 @@
-import { Button } from "@/components";
+import { Button, TextLink } from "@/components";
 import { spacing, typography } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
@@ -13,7 +13,10 @@ export function WelcomeScreen() {
 
 			<View style={styles.buttonContainer}>
 				<Button title="Create a game" onPress={() => router.push("/create-game")} />
-				<Button title="I received a link" onPress={() => null} preset="secondary" />
+				<Button title="I received a link" onPress={() => null} preset="secondary" variant="outline" />
+				<View style={styles.loginLink}>
+					<TextLink label="Log in" onPress={() => router.push("/login")} prompt="Already have an account?" />
+				</View>
 			</View>
 		</View>
 	);
@@ -38,5 +41,8 @@ const styles = StyleSheet.create({
 	},
 	buttonContainer: {
 		gap: spacing[2],
+	},
+	loginLink: {
+		marginTop: spacing[2],
 	},
 });

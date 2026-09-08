@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, TextInputField, TextLink, toast } from "@/components";
+import { Button, TextInputField, toast } from "@/components";
 import { useLogin } from "@/api/auth/useLogin";
 import { useSignup } from "@/api/auth/useSignup";
 import { Controller, useForm } from "react-hook-form";
@@ -120,76 +120,74 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				</Text>
 			</View>
 
-			<View style={styles.form}>
-				{!isLogin && (
+			<View style={styles.formContainer}>
+				<View style={styles.form}>
+					{!isLogin && (
+						<Controller
+							control={control}
+							name="displayName"
+							render={({ field, fieldState }) => (
+								<TextInputField
+									label="Name"
+									value={field.value ?? ""}
+									onChangeText={field.onChange}
+									error={fieldState.error?.message}
+									required
+								/>
+							)}
+						/>
+					)}
+
 					<Controller
 						control={control}
-						name="displayName"
+						name="email"
 						render={({ field, fieldState }) => (
 							<TextInputField
-								label="Name"
-								value={field.value ?? ""}
+								autoCapitalize="none"
+								autoComplete="email"
+								keyboardType="email-address"
+								label="Email"
+								placeholder="you@example.com"
+								required
+								value={field.value}
 								onChangeText={field.onChange}
 								error={fieldState.error?.message}
-								required
 							/>
 						)}
 					/>
-				)}
 
-				<Controller
-					control={control}
-					name="email"
-					render={({ field, fieldState }) => (
-						<TextInputField
-							autoCapitalize="none"
-							autoComplete="email"
-							keyboardType="email-address"
-							label="Email"
-							placeholder="you@example.com"
-							required
-							value={field.value}
-							onChangeText={field.onChange}
-							error={fieldState.error?.message}
-						/>
-					)}
-				/>
-
-				<Controller
-					control={control}
-					name="password"
-					render={({ field, fieldState }) => (
-						<TextInputField
-							autoCapitalize="none"
-							autoComplete={isLogin ? "current-password" : "new-password"}
-							label="Password"
-							placeholder="Enter your password"
-							required
-							secureTextEntry
-							value={field.value}
-							onChangeText={field.onChange}
-							error={fieldState.error?.message}
-						/>
-					)}
+					<Controller
+						control={control}
+						name="password"
+						render={({ field, fieldState }) => (
+							<TextInputField
+								autoCapitalize="none"
+								autoComplete={isLogin ? "current-password" : "new-password"}
+								label="Password"
+								placeholder="Enter your password"
+								required
+								secureTextEntry
+								value={field.value}
+								onChangeText={field.onChange}
+								error={fieldState.error?.message}
+							/>
+						)}
+					/>
+				</View>
+				<Button
+					disabled={isPending}
+					title={
+						isPending
+							? isLogin
+								? "Logging in..."
+								: "Creating account..."
+							: isLogin
+								? "Log in"
+								: "Create account"
+					}
+					onPress={handleSubmit(onSubmit)}
 				/>
 			</View>
-
-			<Button
-				disabled={isPending}
-				title={
-					isPending
-						? isLogin
-							? "Logging in..."
-							: "Creating account..."
-						: isLogin
-							? "Log in"
-							: "Create account"
-				}
-				onPress={handleSubmit(onSubmit)}
-			/>
-			{!isLogin ? (
-				<TextLink label="Log in" onPress={() => router.push("/login")} prompt="Already have an account?" />
-			) : null}
 		</KeyboardAvoidingView>
 	);
 }
@@ -197,8 +195,8 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		gap: spacing[8],
-		paddingTop: spacing[8],
+		gap: spacing[12],
+		justifyContent: "center",
 	},
 	copy: {
 		gap: spacing[2],
@@ -212,6 +210,9 @@ const styles = StyleSheet.create({
 		...typography.body,
 	},
 	form: {
+		gap: spacing[4],
+	},
+	formContainer: {
 		gap: spacing[4],
 	},
 });

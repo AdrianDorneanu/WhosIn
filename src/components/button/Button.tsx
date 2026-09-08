@@ -2,16 +2,18 @@ import { spacing, typography } from "@/theme";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 import { getPreset } from "./utils";
-import { ButtonPreset } from "@/components/button/types";
+import { ButtonPreset, ButtonVariant } from "@/components/button/types";
 
 interface ButtonProps {
 	title: string;
 	onPress: () => void;
 	preset?: ButtonPreset;
+	variant?: ButtonVariant;
 	disabled?: boolean;
 }
-export function Button({ title, onPress, preset = "primary", disabled = false }: ButtonProps) {
-	const presetStyles = getPreset(preset);
+
+export function Button({ title, onPress, preset = "primary", variant = "solid", disabled = false }: ButtonProps) {
+	const presetStyles = getPreset(preset, variant);
 
 	return (
 		<Pressable

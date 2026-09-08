@@ -1,10 +1,10 @@
 import { ScreenLayout } from "@/components";
-import { Text } from "react-native";
+import { ProfileScreen } from "@/features";
 
 export default function ProfileRoute() {
 	return (
 		<ScreenLayout edges={["top", "left", "right"]}>
-			<Text>Profile Screen</Text>
+			<ProfileScreen />
 		</ScreenLayout>
 	);
 }

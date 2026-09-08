@@ -13,6 +13,16 @@ interface ApiErrorResponse {
 	validationErrors?: Record<string, string> | null;
 }
 
+export class ApiError extends Error {
+	constructor(
+		message: string,
+		readonly status: number,
+	) {
+		super(message);
+		this.name = "ApiError";
+	}
+}
+
 type ApiClientOptions = RequestInit & {
 	skipAuth?: boolean;
 };
@@ -44,7 +54,7 @@ export async function apiClient<T>(path: string, options: ApiClientOptions = {})
 	if (!response.ok) {
 		const errorData: ApiErrorResponse = await response.json();
 
-		throw new Error(errorData.message || `API error: ${response.status}`);
+		throw new ApiError(errorData.message || `API error: ${response.status}`, response.status);
 	}
 
 	return await response.json();
