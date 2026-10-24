@@ -54,6 +54,7 @@
 		"reset-project": "node ./scripts/reset-project.js",
 		"android": "expo start --android",
 		"ios": "expo start --ios",
+		"ios:build": "bash ./scripts/run-ios.sh",
 		"web": "expo start --web",
 		"lint": "expo lint",
 		"format": "prettier --write ."

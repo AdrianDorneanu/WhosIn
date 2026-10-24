@@ -25,6 +25,30 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+### Local iOS builds
+
+Use `npm run ios:build` to build and install the native iOS app. The script
+installs CocoaPods dependencies using the macOS
+SDK bundled with the selected Xcode, without changing the SDK used for the iOS
+build. Additional Expo options can be passed with `npm run ios:build -- --device`.
+
+Use `npm run ios` to start Metro without rebuilding. After changing native
+configuration in `app.json`, run `npx expo prebuild --platform ios --no-install`
+before rebuilding.
+
+If Xcode reports that an iOS platform is not installed, install the requested
+version once in **Xcode > Settings > Components**, then retry the build.
+Expo Go does not display the custom native iOS splash screen.
+
+The native splash uses the same white background and centered
+`assets/images/splash-art.png` image on iOS and Android, configured by the
+`expo-splash-screen` plugin in `app.json`. The native image is constrained by the
+platform splash layout; the fullscreen artwork is rendered in-app.
+On both platforms, `SplashArtwork` displays
+`assets/images/splash-art.png` fullscreen while authentication and fonts load,
+then fades out. This in-app artwork works in Expo Go as well and does not require
+a native rebuild. The native splash is hidden once the artwork is displayed.
+
 ## Get a fresh project
 
 When you're ready, run:

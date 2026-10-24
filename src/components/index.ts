@@ -5,6 +5,7 @@ export { NumberInput } from "./numberInput";
 export { ScreenHeader } from "./screenHeader";
 export { ScreenLayout } from "./screenLayout";
 export { Select } from "./select";
+export { SplashArtwork } from "./splashArtwork/SplashArtwork";
 export { TextInputField } from "./textInputField";
 export { TimePicker } from "./timePicker";
 export { TextLink } from "./textLink/TextLink";
