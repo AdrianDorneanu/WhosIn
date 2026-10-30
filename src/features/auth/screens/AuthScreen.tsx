@@ -7,7 +7,8 @@ import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-na
 
 import { LoginFormValues, loginSchema, SignupFormValues, signupSchema } from "../schemas/authSchema";
 import { colors, spacing, typography } from "@/theme";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { useCreateGameDraft } from "@/features/createGame/context";
 
 interface AuthScreenProps {
 	mode: "login" | "signup";
@@ -17,6 +18,8 @@ type AuthFormValues = LoginFormValues | SignupFormValues;
 
 export function AuthScreen({ mode }: AuthScreenProps) {
 	const isLogin = mode === "login";
+	const { returnTo } = useLocalSearchParams<{ returnTo?: string | string[] }>();
+	const { draft } = useCreateGameDraft();
 
 	const loginMutation = useLogin();
 	const signupMutation = useSignup();
@@ -32,6 +35,25 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
 	const isPending = loginMutation.isPending || signupMutation.isPending;
 
+	function handleAuthSuccess(title: string) {
+		if (returnTo === "/review-game") {
+			if (!draft) {
+				router.replace("/create-game");
+				toast.info({
+					title: "Your game draft is no longer available",
+					description: "Please enter your game details again.",
+				});
+				return;
+			}
+
+			router.dismissTo("/review-game");
+		} else {
+			router.replace("/home");
+		}
+
+		toast.success({ title });
+	}
+
 	const onSubmit = (values: AuthFormValues) => {
 		toast.hide();
 
@@ -44,13 +66,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 					password: values.password,
 				},
 				{
-					onSuccess: () => {
-						router.replace("/home");
-
-						toast.success({
-							title: "Welcome back!",
-						});
-					},
+					onSuccess: () => handleAuthSuccess("Welcome back!"),
 					onError: (error) => {
 						toast.error({
 							description: error.message,
@@ -80,13 +96,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 							password: signupValues.password,
 						},
 						{
-							onSuccess: () => {
-								router.replace("/home");
-
-								toast.success({
-									title: "Account created successfully",
-								});
-							},
+							onSuccess: () => handleAuthSuccess("Account created successfully"),
 							onError: (error) => {
 								toast.error({
 									description: error.message,

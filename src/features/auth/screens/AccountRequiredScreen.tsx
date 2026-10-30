@@ -9,5 +9,10 @@ export function AccountRequiredScreen() {
 		return <Redirect href="/review-game" />;
 	}
 
-	return <AccountRequired onLogin={() => router.push("/login")} onSignUp={() => router.push("/signup")} />;
+	return (
+		<AccountRequired
+			onLogin={() => router.push({ pathname: "/login", params: { returnTo: "/review-game" } })}
+			onSignUp={() => router.push({ pathname: "/signup", params: { returnTo: "/review-game" } })}
+		/>
+	);
 }

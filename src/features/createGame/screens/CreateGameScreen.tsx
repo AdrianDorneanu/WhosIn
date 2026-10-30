@@ -9,9 +9,9 @@ import { useCreateGameDraft } from "../context";
 import { CreateGameFormValues, createGameSchema } from "../schemas";
 
 export function CreateGameScreen() {
-	const { setDraft } = useCreateGameDraft();
+	const { draft, setDraft } = useCreateGameDraft();
 	const form = useForm<CreateGameFormValues>({
-		defaultValues: {
+		defaultValues: draft ?? {
 			sport: "padel",
 			title: "",
 			date: "",

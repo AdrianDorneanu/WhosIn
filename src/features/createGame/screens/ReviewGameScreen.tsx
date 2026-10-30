@@ -2,9 +2,9 @@ import { useCreateGame } from "@/api/games";
 import { Button, toast } from "@/components";
 import { useAuthStore } from "@/stores";
 import { spacing } from "@/theme";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { DateTime } from "luxon";
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ReviewGameStep } from "../components";
@@ -16,11 +16,13 @@ export function ReviewGameScreen() {
 	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const createGameMutation = useCreateGame();
 
-	useEffect(() => {
-		if (!draft) {
-			router.replace("/create-game");
-		}
-	}, [draft]);
+	useFocusEffect(
+		useCallback(() => {
+			if (!draft) {
+				router.replace("/create-game");
+			}
+		}, [draft]),
+	);
 
 	if (!draft) {
 		return null;

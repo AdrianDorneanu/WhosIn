@@ -11,6 +11,7 @@ import { restoreAuth } from "@/utils";
 import { SplashArtwork, ToastHost } from "@/components";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { CreateGameDraftProvider } from "@/features/createGame/context";
 
 const navigationTheme = {
 	...DarkTheme,
@@ -74,16 +75,18 @@ export default function RootLayout() {
 				{ready ? (
 					<WebSafeArea>
 						<QueryClientProvider client={queryClient}>
-							<Stack
-								screenOptions={{
-									headerShown: false,
-									animation: "slide_from_right",
-									contentStyle: {
-										backgroundColor: colors.background.app,
-									},
-								}}
-							/>
-							<ToastHost />
+							<CreateGameDraftProvider>
+								<Stack
+									screenOptions={{
+										headerShown: false,
+										animation: "slide_from_right",
+										contentStyle: {
+											backgroundColor: colors.background.app,
+										},
+									}}
+								/>
+								<ToastHost />
+							</CreateGameDraftProvider>
 						</QueryClientProvider>
 					</WebSafeArea>
 				) : null}
