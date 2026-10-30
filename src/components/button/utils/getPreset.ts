@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.danger.main,
 	},
 	dangerPressedButton: {
-		opacity: 0.8,
+		backgroundColor: colors.danger.outline,
 	},
 	dangerText: {
 		color: colors.primary.contrast,
@@ -123,13 +123,13 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 	},
 	outlinePressedButton: {
-		opacity: 0.7,
+		backgroundColor: colors.secondary.pressed,
 	},
 
 	ghostButton: {
 		backgroundColor: "transparent",
 	},
 	ghostPressedButton: {
-		opacity: 0.6,
+		backgroundColor: colors.secondary.pressed,
 	},
 });

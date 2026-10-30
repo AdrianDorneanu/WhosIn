@@ -14,7 +14,12 @@ export const createGameSchema = z
 		endTime: z.string().min(1, "End time is required"),
 		location: z.string().min(1, "Location is required"),
 		maxPlayers: z.number().min(2, "At least 2 players are required"),
-		cost: z.string(),
+		cost: z
+			.string()
+			.refine(
+				(value) => !value.trim() || (Number.isFinite(Number(value)) && Number(value) >= 0),
+				"Enter a valid non-negative cost per player",
+			),
 		notes: z.string(),
 	})
 	.refine(

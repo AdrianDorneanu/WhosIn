@@ -155,8 +155,9 @@ export function GameDetailsStep({ onContinue }: GameDetailsStepProps) {
 					<TextInputField
 						error={fieldState.error?.message}
 						label="Cost (optional)"
+						keyboardType="decimal-pad"
 						onChangeText={field.onChange}
-						placeholder="AED 50 / player"
+						placeholder="50"
 						value={field.value}
 					/>
 				)}

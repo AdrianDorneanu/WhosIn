@@ -42,6 +42,7 @@ export function TextInputField({
 			</Text>
 
 			<AnimatedTextInput
+				keyboardAppearance="dark"
 				autoCapitalize={autoCapitalize}
 				autoComplete={autoComplete}
 				keyboardType={keyboardType}

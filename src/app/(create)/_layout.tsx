@@ -10,7 +10,7 @@ export default function CreateGameLayout() {
 					headerShown: false,
 					animation: "slide_from_right",
 					contentStyle: {
-						backgroundColor: colors.white,
+						backgroundColor: colors.background.app,
 					},
 				}}
 			/>

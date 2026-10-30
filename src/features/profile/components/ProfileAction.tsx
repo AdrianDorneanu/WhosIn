@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 	},
 
 	actionPressed: {
-		opacity: 0.65,
+		backgroundColor: colors.secondary.pressed,
 	},
 
 	actionContent: {

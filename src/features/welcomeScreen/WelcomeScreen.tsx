@@ -1,5 +1,5 @@
 import { Button, TextLink } from "@/components";
-import { spacing, typography } from "@/theme";
+import { colors, spacing, typography } from "@/theme";
 import { StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 
@@ -32,10 +32,12 @@ const styles = StyleSheet.create({
 		gap: spacing[2],
 	},
 	header: {
+		color: colors.text.primary,
 		textAlign: "center",
 		...typography.heading1,
 	},
 	description: {
+		color: colors.text.secondary,
 		textAlign: "center",
 		...typography.bodyMedium,
 	},

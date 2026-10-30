@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
 		width: spacing[8],
 	},
 	controlButtonPressed: {
-		backgroundColor: colors.green[100],
+		backgroundColor: colors.secondary.pressed,
 	},
 	controlButtonDisabled: {
 		backgroundColor: colors.background.muted,

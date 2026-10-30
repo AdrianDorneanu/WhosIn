@@ -155,6 +155,7 @@ export function Select({
 								<View style={styles.searchContainer}>
 									<FontAwesomeIcon color={colors.text.muted} icon={faMagnifyingGlass} size={14} />
 									<TextInput
+										keyboardAppearance="dark"
 										autoCorrect={false}
 										onChangeText={setSearch}
 										placeholder={searchPlaceholder}
@@ -280,7 +281,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	backdrop: {
-		backgroundColor: "rgba(17, 24, 39, 0.55)",
+		backgroundColor: colors.overlay.backdrop,
 		bottom: 0,
 		left: 0,
 		position: "absolute",
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
 	},
 	searchContainer: {
 		alignItems: "center",
-		borderColor: colors.border.default,
+		borderColor: colors.border.strong,
 		borderRadius: spacing[3],
 		borderWidth: 1,
 		flexDirection: "row",

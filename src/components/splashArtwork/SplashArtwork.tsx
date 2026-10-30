@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
+import { colors } from "@/theme";
 
 interface SplashArtworkProps {
 	ready: boolean;
@@ -40,7 +41,7 @@ export function SplashArtwork({ ready, onFinish }: SplashArtworkProps) {
 	return (
 		<Animated.View style={[styles.container, { opacity }]} accessibilityViewIsModal>
 			<Image
-				source={require("../../../assets/images/splash-art.png")}
+				source={require("../../../assets/images/splash-art-dark.png")}
 				style={StyleSheet.absoluteFill}
 				contentFit="cover"
 				accessibilityLabel="Who's In"
@@ -57,7 +58,7 @@ export function SplashArtwork({ ready, onFinish }: SplashArtworkProps) {
 const styles = StyleSheet.create({
 	container: {
 		...StyleSheet.absoluteFill,
-		backgroundColor: "#FFFFFF",
+		backgroundColor: colors.background.app,
 		zIndex: 1,
 	},
 });

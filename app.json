@@ -4,9 +4,10 @@
 		"slug": "whos-in",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/images/lock.png",
+		"icon": "./assets/images/app-icon.png",
 		"scheme": "whosin",
-		"userInterfaceStyle": "automatic",
+		"userInterfaceStyle": "dark",
+		"backgroundColor": "#0C1411",
 		"ios": {
 			"icon": "./assets/expo.icon",
 			"bundleIdentifier": "com.paxxa.whos-in"
@@ -14,28 +15,37 @@
 		"android": {
 			"adaptiveIcon": {
 				"backgroundColor": "#E6F4FE",
-				"foregroundImage": "./assets/images/lock.png"
+				"foregroundImage": "./assets/images/app-icon.png"
 			},
 			"predictiveBackGestureEnabled": false
 		},
 		"web": {
 			"output": "static",
-			"favicon": "./assets/images/lock.png"
+			"favicon": "./assets/images/app-icon.png"
 		},
 		"plugins": [
 			"expo-router",
 			[
 				"expo-splash-screen",
 				{
-					"backgroundColor": "#FFFFFF",
-					"image": "./assets/images/splash-art.png",
-					"imageWidth": 76
+					"backgroundColor": "#0C1411",
+					"image": "./assets/images/splash-art-dark.png",
+					"imageWidth": 76,
+					"ios": {
+						"enableFullScreenImage_legacy": true,
+						"resizeMode": "cover"
+					}
 				}
 			],
 			"expo-secure-store",
 			"expo-font",
 			"expo-image",
-			"expo-status-bar",
+			[
+				"expo-status-bar",
+				{
+					"style": "light"
+				}
+			],
 			"expo-web-browser"
 		],
 		"experiments": {

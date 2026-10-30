@@ -21,9 +21,9 @@ interface ToastVariant {
 const variants: Record<AppToastType, ToastVariant> = {
 	success: {
 		backgroundColor: colors.primary.light,
-		borderColor: colors.green[400],
+		borderColor: colors.primary.main,
 		icon: faCircleCheck,
-		iconColor: colors.green[600],
+		iconColor: colors.primary.main,
 	},
 	info: {
 		backgroundColor: colors.info.light,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		paddingHorizontal: spacing[3],
 		paddingVertical: spacing[3],
-		shadowColor: colors.text.primary,
+		shadowColor: colors.overlay.shadow,
 		shadowOffset: {
 			height: 4,
 			width: 0,

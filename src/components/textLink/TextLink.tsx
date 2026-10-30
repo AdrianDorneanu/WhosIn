@@ -11,13 +11,8 @@ export function TextLink({ prompt, label, onPress }: TextLinkProps) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.prompt}>{prompt}</Text>
-			<Pressable
-				accessibilityRole="link"
-				hitSlop={spacing[2]}
-				onPress={onPress}
-				style={({ pressed }) => pressed && styles.pressed}
-			>
-				<Text style={styles.label}>{label}</Text>
+			<Pressable accessibilityRole="link" hitSlop={spacing[2]} onPress={onPress}>
+				{({ pressed }) => <Text style={[styles.label, pressed && styles.pressed]}>{label}</Text>}
 			</Pressable>
 		</View>
 	);
@@ -36,9 +31,10 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		color: colors.text.link,
+		textDecorationLine: "underline",
 		...typography.bodyMedium,
 	},
 	pressed: {
-		opacity: 0.7,
+		color: colors.primary.pressed,
 	},
 });

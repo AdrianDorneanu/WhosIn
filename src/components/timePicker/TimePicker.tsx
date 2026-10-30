@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	backdrop: {
-		backgroundColor: "rgba(17, 24, 39, 0.55)",
+		backgroundColor: colors.overlay.backdrop,
 		bottom: 0,
 		left: 0,
 		position: "absolute",
