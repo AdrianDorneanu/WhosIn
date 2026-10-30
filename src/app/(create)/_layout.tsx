@@ -1,19 +1,21 @@
-import { CreateGameDraftProvider } from "@/features/createGame";
+import { CreateGameDraftProvider, GameCreationProgressProvider } from "@/features/createGame";
 import { colors } from "@/theme";
 import { Stack } from "expo-router";
 
 export default function CreateGameLayout() {
 	return (
 		<CreateGameDraftProvider>
-			<Stack
-				screenOptions={{
-					headerShown: false,
-					animation: "slide_from_right",
-					contentStyle: {
-						backgroundColor: colors.background.app,
-					},
-				}}
-			/>
+			<GameCreationProgressProvider>
+				<Stack
+					screenOptions={{
+						headerShown: false,
+						animation: "slide_from_right",
+						contentStyle: {
+							backgroundColor: colors.background.app,
+						},
+					}}
+				/>
+			</GameCreationProgressProvider>
 		</CreateGameDraftProvider>
 	);
 }

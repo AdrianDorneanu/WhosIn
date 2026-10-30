@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 
 import { LoginFormValues, loginSchema, SignupFormValues, signupSchema } from "../schemas/authSchema";
-import { spacing, typography } from "@/theme";
+import { colors, spacing, typography } from "@/theme";
 import { router } from "expo-router";
 
 interface AuthScreenProps {
@@ -114,9 +114,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 				<Text style={styles.title}>{isLogin ? "Welcome back" : "Create your account"}</Text>
 
 				<Text style={styles.description}>
-					{isLogin
-						? "Log in to continue saving your game."
-						: "Create an account to save and manage your games."}
+					{isLogin ? "Log in to your account." : "Create an account to save and manage your games."}
 				</Text>
 			</View>
 
@@ -202,10 +200,12 @@ const styles = StyleSheet.create({
 		gap: spacing[2],
 	},
 	title: {
+		color: colors.text.primary,
 		textAlign: "center",
 		...typography.heading2,
 	},
 	description: {
+		color: colors.text.secondary,
 		textAlign: "center",
 		...typography.body,
 	},

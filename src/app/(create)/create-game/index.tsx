@@ -1,5 +1,6 @@
 import { ScreenHeader } from "@/components";
 import { CreateGameScreen } from "@/features";
+import { GameCreationProgress } from "@/features/createGame";
 import { spacing } from "@/theme";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,7 +9,7 @@ export default function CreateGameRoute() {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScreenHeader title="Create a game" />
-
+			<GameCreationProgress step={1} />
 			<CreateGameScreen />
 		</SafeAreaView>
 	);

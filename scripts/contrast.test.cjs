@@ -84,7 +84,9 @@ test("input boundaries, focus, selection and error indicators meet non-text cont
 		ratios.push(checkContrast(colors.danger.outline, background, 3, "Error boundary"));
 	}
 
-	ratios.push(checkContrast(colors.primary.main, colors.primary.light, 3, "Selected tab or option icon"));
+	ratios.push(
+		checkContrast(colors.primary.main, colors.primary.light, 3, "Selected icons and creation progress fill"),
+	);
 	ratios.push(checkContrast(colors.text.muted, colors.background.card, 3, "Inactive tab icon"));
 	context.diagnostic(`Minimum non-text contrast: ${Math.min(...ratios).toFixed(2)}:1`);
 });

@@ -1,5 +1,6 @@
 import { ScreenHeader } from "@/components";
 import { ReviewGameScreen } from "@/features";
+import { GameCreationProgress } from "@/features/createGame";
 import { spacing } from "@/theme";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,7 +9,7 @@ export default function ReviewGameRoute() {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScreenHeader title="Review the game" />
-
+			<GameCreationProgress step={2} />
 			<ReviewGameScreen />
 		</SafeAreaView>
 	);
